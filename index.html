@@ -470,12 +470,12 @@
         /* Updated breakpoint to 1024px to capture tablets and landscape phones */
         @media (max-width: 1024px) {
             /* 1. iOS Safari does not support 'zoom'. 
-               2. We use font-size: 12px (approx 75% of 16px) to simulate the scale.
+               2. We use font-size: 10.5px (approx 65% of 16px) to simulate the scale.
                3. Buttons and sizing use 'em' so they scale relative to this font size.
             */
             body { 
                 padding: 10px; 
-                font-size: 12px; /* Simulates 75% scale */
+                font-size: 10.5px; /* Scaled down further */
                 -webkit-text-size-adjust: 100%; /* Prevent auto-enlarging text on rotate */
             }
             
@@ -532,8 +532,9 @@
             }
             /* Ensure Paid button is visible and sized proportionally */
             .paid-btn { 
-                min-width: 80px;
-                padding: 0.5em 1em; /* Use em to scale with font-size */
+                min-width: 70px;
+                padding: 0.4em 0.8em; /* Use em to scale with font-size */
+                font-size: 1.1em;
             }
 
             /* --- Component Styling --- */
@@ -551,7 +552,7 @@
                 display: grid !important;
                 grid-template-columns: 1fr auto !important; /* Left takes space, Right fits content */
                 align-items: center !important;
-                gap: 10px; 
+                gap: 8px; 
                 padding: 0.8rem 0.5rem;
             }
 
@@ -569,6 +570,28 @@
                 align-items: center;
                 justify-content: flex-end;
             }
+
+            /* Mobile-specific adjustments for indicators to be smaller */
+            .invoice-indicator, .warning-indicator, .late-indicator {
+                width: 16px;
+                height: 16px;
+                margin-right: 4px;
+                font-size: 10px;
+            }
+            
+            /* Adjust checkmark inside invoice indicator */
+            .invoice-indicator::after {
+                width: 3px;
+                height: 6px;
+                border-width: 0 1.5px 1.5px 0;
+            }
+
+            /* Tighter badges */
+            .tenant-status-badge {
+                padding: 0.25em 0.6em;
+                min-width: 70px;
+                font-size: 0.9em;
+            }
             
             .floor-header h2 { cursor: default; font-size: 1.1em; }
             
@@ -585,7 +608,7 @@
                 gap: 2px; 
             }
             
-            .calendar-day { height: 50px; } /* Fixed smaller height for mobile calendar */
+            .calendar-day { height: 40px; } /* Fixed smaller height for mobile calendar */
             
             #set-rate-btn, #modal-renew-btn { display: none !important; }
             .input-row { flex-direction: column; gap: 0; }
