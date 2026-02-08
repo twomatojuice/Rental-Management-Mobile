@@ -708,6 +708,19 @@
             </div>
         </div>
     </div>
+
+    <!-- LOGIN OVERLAY -->
+    <div id="login-overlay" class="modal-overlay" style="display: flex; z-index: 2000; background-color: var(--background-color);">
+        <div class="modal-content" style="max-width: 320px; text-align: center;">
+            <h3 style="margin-bottom: 1.5rem;">Restricted Access</h3>
+            <div class="input-group">
+                <input type="password" id="login-pin" class="modal-input" placeholder="Enter PIN" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem; margin-bottom: 1rem;" autocomplete="off">
+            </div>
+            <button id="login-btn" class="modal-btn modal-btn-primary" style="width: 100%; padding: 0.75rem;">Unlock Application</button>
+            <p id="login-error" style="color: var(--danger-color); margin-top: 15px; font-size: 0.9rem; display: none;">Invalid PIN. Please try again.</p>
+        </div>
+    </div>
+
     <div id="context-menu" class="context-menu" style="display: none;"></div>
 
     <script>
@@ -718,6 +731,8 @@
             const SYNC_INTERVAL = 30000;
 
             const state = {
+                pin: localStorage.getItem('tenant_app_pin') || "", // Load saved PIN
+                isAuthenticated: false,
                 rates: { electricity: 0.25, water: 1.0, parking: 50.0, lateFee: 5.0 },
                 sections: [],
                 archivedTenants: [],
@@ -753,7 +768,8 @@
                     'prev-month-btn', 'next-month-btn', 'overview-income-unit', 'overview-income-consumption',
                     'overview-income-parking', 'overview-income-other', 'overview-expense-salary',
                     'overview-expense-maintenance', 'overview-expense-consumption-cost', 'overview-expense-other',
-                    'overview-total-profit', 'overview-net-profit', 'expense-header', 'overview-header'
+                    'overview-total-profit', 'overview-net-profit', 'expense-header', 'overview-header',
+                    'login-overlay', 'login-pin', 'login-btn', 'login-error' // Added Login Elements
                 ];
                 ids.forEach(id => {
                     const camelCaseId = id.replace(/-(\w)/g, (_, c) => c.toUpperCase());
@@ -767,14 +783,14 @@
                 try {
                     const response = await fetch(SCRIPT_URL, {
                         method: 'POST',
-                        body: JSON.stringify({ action, payload })
+                        body: JSON.stringify({ action, payload, pin: state.pin }) // Send PIN with POST
                     });
                     const result = await response.json();
                     if (result.status === "success") {
                         return result.data;
                     } else {
                         console.error("Action failed:", result.message);
-                        showError("Could not process request on the server. Error: " + result.message);
+                        showError("Server Error: " + result.message);
                         return null;
                     }
                 } catch (error) {
@@ -787,15 +803,29 @@
             }
 
             async function loadDataFromSheet() {
-                if (state.isModalOpen || state.isSaving) return;
+                if (state.isModalOpen || state.isSaving || !state.pin) return; // Don't load without PIN
                 try {
-                    const response = await fetch(SCRIPT_URL);
+                    // Send PIN with GET request
+                    const response = await fetch(`${SCRIPT_URL}?pin=${encodeURIComponent(state.pin)}`);
                     if (!response.ok) throw new Error(`Failed to load data. Status: ${response.status}`);
 
                     const freshData = await response.json();
+                    
+                    // Check if backend returned an error (Invalid PIN)
+                    if (freshData.status === 'error') {
+                        throw new Error(freshData.message);
+                    }
+
                     if (!freshData) {
                         console.warn("Received empty data from server.");
                         return;
+                    }
+
+                    // If we get here, authentication is successful
+                    if (!state.isAuthenticated) {
+                        state.isAuthenticated = true;
+                        DOM.loginOverlay.style.display = 'none';
+                        localStorage.setItem('tenant_app_pin', state.pin); // Save valid PIN
                     }
 
                     const currentDataSignature = JSON.stringify({
@@ -845,7 +875,15 @@
                         render();
                     }
                 } catch (error) {
-                    console.error("Could not sync with Google Sheet:", error);
+                    console.error("Sync Error:", error);
+                    if (error.message === "Invalid Access PIN") {
+                        state.isAuthenticated = false;
+                        state.pin = "";
+                        localStorage.removeItem('tenant_app_pin');
+                        DOM.loginOverlay.style.display = 'flex';
+                        DOM.loginError.textContent = "Invalid PIN. Please try again.";
+                        DOM.loginError.style.display = 'block';
+                    }
                 }
             }
 
@@ -1654,14 +1692,55 @@
                 });
             }
 
+            function handleLogin() {
+                const pinInput = DOM.loginPin.value.trim();
+                if (!pinInput && !state.pin) {
+                    DOM.loginError.textContent = "Please enter a PIN";
+                    DOM.loginError.style.display = 'block';
+                    return;
+                }
+                
+                if (pinInput) state.pin = pinInput;
+                
+                DOM.loginBtn.textContent = "Verifying...";
+                DOM.loginBtn.disabled = true;
+                DOM.loginError.style.display = 'none';
+
+                // Attempt to load data to verify PIN
+                loadDataFromSheet().then(() => {
+                    if (state.isAuthenticated) {
+                        DOM.loginBtn.textContent = "Unlock Application";
+                        DOM.loginBtn.disabled = false;
+                        DOM.loginPin.value = "";
+                    } else {
+                        // Reset if failed
+                        DOM.loginBtn.textContent = "Unlock Application";
+                        DOM.loginBtn.disabled = false;
+                    }
+                });
+            }
+
             function init() {
                 cacheDOMElements();
+                
+                // Login Event Listeners
+                DOM.loginBtn.addEventListener('click', handleLogin);
+                DOM.loginPin.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') handleLogin();
+                });
+
                 DOM.addSectionBtn.textContent = 'Loading...';
                 DOM.addSectionBtn.disabled = true;
-                loadDataFromSheet().then(() => render()).finally(() => {
+
+                // Check for saved PIN and try to auto-login
+                if (state.pin) {
+                    handleLogin();
+                } else {
+                    // Just ensure UI is ready, wait for user input
                     DOM.addSectionBtn.textContent = '+ add section';
                     DOM.addSectionBtn.disabled = false;
-                });
+                }
+
                 setInterval(loadDataFromSheet, SYNC_INTERVAL);
 
                 document.body.addEventListener('click', (event) => {
