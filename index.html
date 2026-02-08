@@ -548,7 +548,7 @@
                 grid-template-columns: 1fr auto !important; /* Left takes space, Right fits content */
                 align-items: center !important;
                 gap: 8px; 
-                padding: 0.8rem 0; /* Reduced horizontal padding */
+                padding: 0.8rem 10px; /* Added 10px horizontal padding */
                 background-color: transparent; /* Ensure list items blend if needed, or keep white? User asked for transparent container. Keeping item white usually looks best, but let's stick to default list styling which is transparent in some resets, but here .tenant-item has no bg set globally. */
                 border-bottom: 1px solid var(--border-color); /* Keep separator */
             }
@@ -575,10 +575,17 @@
             .tenant-name { 
                 font-size: 1.2em !important; /* ~11.4px */
                 font-weight: 600;
+                margin-bottom: 0; /* Tighten spacing */
+                min-height: 0; /* Remove spacer */
             }
             .tenant-unit { 
                 font-size: 0.9em !important; /* ~8.55px */
                 margin-top: 2px;
+            }
+
+            /* Fix expanded view font size to match mobile base size */
+            .details-grid {
+                font-size: 1em !important;
             }
 
             /* Ensure indicators align correctly in the grid cell */
