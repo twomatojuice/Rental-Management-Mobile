@@ -543,7 +543,14 @@
                 border-bottom: none;
             }
             
-            .tenant-summary { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+            /* Revised: Indicators to the right */
+            .tenant-summary { 
+                flex-direction: row; 
+                align-items: center; 
+                justify-content: space-between;
+                gap: 0; 
+            }
+            
             .floor-header h2 { cursor: default; }
             
             /* Calendar Mobile Styles */
@@ -1873,6 +1880,66 @@
             const qrCodeUrl = "https://iili.io/fDUwQ6X.jpg";
             const filler = '<p style="justify-content: flex-end; color: #adb5bd;">-</p>';
 
+            // Helper to generate content
+            const generateContent = () => `
+                <div class="invoice-content">
+                    <header class="invoice-header">
+                        <div class="logo-area">${logoHTML}</div>
+                        <div class="invoice-title-area">
+                            <h1>${t.invoice}</h1>
+                            <p>Norkor Thom Apartment<br>St. 464 No. 78 Chamkarmon<br>12311 Toul Tumpoung 1<br>Phnom Penh</p>
+                        </div>
+                    </header>
+                    <section class="tenant-details-grid">
+                        <div class="tenant-info">
+                            <p><strong>${data.name}</strong></p>
+                            <p>${t.unit} ${data.unit}</p>
+                            <br>
+                            <p><strong>${t.monthlyRent}</strong></p>
+                            <p>${Number(data.rent).toFixed(2)} USD</p>
+                        </div>
+                        <div class="invoice-dates">
+                            <p><strong>${t.dateOfIssue}:</strong> ${formattedToday}</p>
+                            <p><strong>${t.dueDate}:</strong> ${formattedDueDate}</p>
+                        </div>
+                        <div class="amount-due">
+                            <p>${t.invoiceNumber}: ${invoiceNumber}</p>
+                            <strong><span class="amount-due-label">${t.amountDue}:</span> <span class="amount-due-value">${data.totalBilling.toFixed(2)}</span></strong>
+                            <span>USD</span>
+                        </div>
+                    </section>
+                    <main class="charges-grid">
+                        <div class="charge-item">
+                            <h3>${t.electricity}</h3>
+                            <p><span>${t.previous}:</span> <span>${data.elecPrev} Kwh</span></p>
+                            <p><span>${t.current}:</span> <span>${data.elecCurrent} Kwh</span></p>
+                            <p><span>${t.usage}:</span> <span>${data.elecUsage.toFixed(2)} Kwh</span></p>
+                            <hr style="border: none; border-top: 1px solid #f1f3f5; margin: 5px 0;">
+                            <p><span>${t.rate}:</span> <span>${data.rates.electricity.toFixed(2)} / Kwh</span></p>
+                            <p class="total"><span>${t.total}:</span> <span>${data.elecBilling.toFixed(2)} USD</span></p>
+                        </div>
+                        <div class="charge-item">
+                            <h3>${t.water}</h3>
+                            <p><span>Pax:</span> <span>${data.waterPax || 0}</span></p>
+                            ${filler}
+                            ${filler}
+                            <hr style="border: none; border-top: 1px solid #f1f3f5; margin: 5px 0;">
+                            <p><span>${t.rate}:</span> <span>${data.rates.water.toFixed(2)} / Pax</span></p>
+                            <p class="total"><span>${t.total}:</span> <span>${data.waterBilling.toFixed(2)} USD</span></p>
+                        </div>
+                        <div class="charge-item">
+                            <h3>${t.parkingOther}</h3>
+                            <p><span>${t.vehicles}:</span> <span>${data.parkingBilling.toFixed(2)} USD</span></p>
+                            <p><span>${t.other}:</span> <span>${Number(data.other).toFixed(2)} USD</span></p>
+                            ${data.lateFee > 0 ? `<p><span>Late Fee:</span> <span>${Number(data.lateFee).toFixed(2)} USD</span></p>` : filler}
+                            <hr style="border: none; border-top: 1px solid transparent; margin: 5px 0;">
+                            ${filler}
+                            <p class="total"><span>${t.total}:</span> <span>${(data.parkingBilling + Number(data.other) + Number(data.lateFee || 0)).toFixed(2)} USD</span></p>
+                        </div>
+                    </main>
+                </div>
+            `;
+
             return `
             <!DOCTYPE html>
             <html lang="en">
@@ -1919,40 +1986,10 @@
             <body>
                 <div class="a4-page-container">
                     <div class="invoice-half">
-                        <div class="invoice-content">
-                            <header class="invoice-header">
-                                <div class="logo-area">${logoHTML}</div>
-                                <div class="invoice-title-area"><h1>${t.invoice}</h1><p>Norkor Thom Apartment<br>St. 464 No. 78 Chamkarmon<br>12311 Toul Tumpoung 1<br>Phnom Penh</p></div>
-                            </header>
-                            <section class="tenant-details-grid">
-                                <div class="tenant-info"><p><strong>${data.name}</strong></p><p>${t.unit} ${data.unit}</p><br><p><strong>${t.monthlyRent}</strong></p><p>${Number(data.rent).toFixed(2)} USD</p></div>
-                                <div class="invoice-dates"><p><strong>${t.dateOfIssue}:</strong> ${formattedToday}</p><p><strong>${t.dueDate}:</strong> ${formattedDueDate}</p></div>
-                                <div class="amount-due"><p>${t.invoiceNumber}: ${invoiceNumber}</p><strong><span class="amount-due-label">${t.amountDue}:</span> <span class="amount-due-value">${data.totalBilling.toFixed(2)}</span></strong><span>USD</span></div>
-                            </section>
-                            <main class="charges-grid">
-                                <div class="charge-item"><h3>${t.electricity}</h3><p><span>${t.previous}:</span> <span>${data.elecPrev} Kwh</span></p><p><span>${t.current}:</span> <span>${data.elecCurrent} Kwh</span></p><p><span>${t.usage}:</span> <span>${data.elecUsage.toFixed(2)} Kwh</span></p><hr style="border: none; border-top: 1px solid #f1f3f5; margin: 5px 0;"><p><span>${t.rate}:</span> <span>${data.rates.electricity.toFixed(2)} / Kwh</span></p><p class="total"><span>${t.total}:</span> <span>${data.elecBilling.toFixed(2)} USD</span></p></div>
-                                <div class="charge-item"><h3>${t.water}</h3><p><span>Pax:</span> <span>${data.waterPax || 0}</span></p>${filler}${filler}<hr style="border: none; border-top: 1px solid #f1f3f5; margin: 5px 0;"><p><span>${t.rate}:</span> <span>${data.rates.water.toFixed(2)} / Pax</span></p><p class="total"><span>${t.total}:</span> <span>${data.waterBilling.toFixed(2)} USD</span></p></div>
-                                <div class="charge-item"><h3>${t.parkingOther}</h3><p><span>${t.vehicles}:</span> <span>${data.parkingBilling.toFixed(2)} USD</span></p><p><span>${t.other}:</span> <span>${Number(data.other).toFixed(2)} USD</span></p>${data.lateFee > 0 ? `<p><span>Late Fee:</span> <span>${Number(data.lateFee).toFixed(2)} USD</span></p>` : filler}<hr style="border: none; border-top: 1px solid transparent; margin: 5px 0;">${filler}<p class="total"><span>${t.total}:</span> <span>${(data.parkingBilling + Number(data.other) + Number(data.lateFee || 0)).toFixed(2)} USD</span></p></div>
-                            </main>
-                        </div>
+                        ${generateContent()}
                     </div>
                     <div class="invoice-half">
-                        <div class="invoice-content">
-                            <header class="invoice-header">
-                                <div class="logo-area">${logoHTML}</div>
-                                <div class="invoice-title-area"><h1>${t.invoice}</h1><p>Norkor Thom Apartment<br>St. 464 No. 78 Chamkarmon<br>12311 Toul Tumpoung 1<br>Phnom Penh</p></div>
-                            </header>
-                            <section class="tenant-details-grid">
-                                <div class="tenant-info"><p><strong>${data.name}</strong></p><p>${t.unit} ${data.unit}</p><br><p><strong>${t.monthlyRent}</strong></p><p>${Number(data.rent).toFixed(2)} USD</p></div>
-                                <div class="invoice-dates"><p><strong>${t.dateOfIssue}:</strong> ${formattedToday}</p><p><strong>${t.dueDate}:</strong> ${formattedDueDate}</p></div>
-                                <div class="amount-due"><p>${t.invoiceNumber}: ${invoiceNumber}</p><strong><span class="amount-due-label">${t.amountDue}:</span> <span class="amount-due-value">${data.totalBilling.toFixed(2)}</span></strong><span>USD</span></div>
-                            </section>
-                            <main class="charges-grid">
-                                <div class="charge-item"><h3>${t.electricity}</h3><p><span>${t.previous}:</span> <span>${data.elecPrev} Kwh</span></p><p><span>${t.current}:</span> <span>${data.elecCurrent} Kwh</span></p><p><span>${t.usage}:</span> <span>${data.elecUsage.toFixed(2)} Kwh</span></p><hr style="border: none; border-top: 1px solid #f1f3f5; margin: 5px 0;"><p><span>${t.rate}:</span> <span>${data.rates.electricity.toFixed(2)} / Kwh</span></p><p class="total"><span>${t.total}:</span> <span>${data.elecBilling.toFixed(2)} USD</span></p></div>
-                                <div class="charge-item"><h3>${t.water}</h3><p><span>Pax:</span> <span>${data.waterPax || 0}</span></p>${filler}${filler}<hr style="border: none; border-top: 1px solid #f1f3f5; margin: 5px 0;"><p><span>${t.rate}:</span> <span>${data.rates.water.toFixed(2)} / Pax</span></p><p class="total"><span>${t.total}:</span> <span>${data.waterBilling.toFixed(2)} USD</span></p></div>
-                                <div class="charge-item"><h3>${t.parkingOther}</h3><p><span>${t.vehicles}:</span> <span>${data.parkingBilling.toFixed(2)} USD</span></p><p><span>${t.other}:</span> <span>${Number(data.other).toFixed(2)} USD</span></p>${data.lateFee > 0 ? `<p><span>Late Fee:</span> <span>${Number(data.lateFee).toFixed(2)} USD</span></p>` : filler}<hr style="border: none; border-top: 1px solid transparent; margin: 5px 0;">${filler}<p class="total"><span>${t.total}:</span> <span>${(data.parkingBilling + Number(data.other) + Number(data.lateFee || 0)).toFixed(2)} USD</span></p></div>
-                            </main>
-                        </div>
+                        ${generateContent()}
                     </div>
                 </div>
                 <div class="a4-page-container back-page">
