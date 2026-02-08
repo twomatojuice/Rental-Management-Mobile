@@ -481,34 +481,37 @@
             
             /* --- Layout Reordering --- */
             .app-container { 
+            /* --- Layout Reordering & Visibility --- */
+            .app-container { 
                 flex-direction: column; 
             }
-            /* Move Main Container (Tenants) to Top */
+
+            /* Hide Calendar (Left Column) entirely */
+            .left-column { 
+                display: none !important; 
+            }
+
+            /* Move Main Container (Tenants) to Top and make Transparent */
             .main-container { 
                 order: 1; 
-                padding: 1rem; 
+                padding: 0; /* Remove padding */
                 width: 100%;
-                border: none;
-                box-shadow: none;
-                padding-left: 0;
-                padding-right: 0;
+                border: none !important;
+                box-shadow: none !important;
+                background-color: transparent !important; /* Transparent BG */
                 margin-bottom: 20px;
-            }
-            /* Move Left Column (Calendar) to Bottom */
-            .left-column { 
-                order: 2; 
-                width: 100%; 
-                position: static; 
             }
 
             /* --- Visibility Controls --- */
             /* Hide Overview completely */
             .overview-container { display: none !important; }
             
-            /* Hide Global Actions */
+            /* Hide Global Actions & Headers */
             .header-actions, 
             #add-section-btn, 
-            .context-menu { 
+            .context-menu,
+            .main-header, /* Hide "Tenant Information" Title */
+            .floor-header /* Hide "Floor X" Headers */ { 
                 display: none !important; 
             }
 
@@ -538,14 +541,6 @@
             }
 
             /* --- Component Styling --- */
-            h1 { font-size: 2em; } /* Relative scaling */
-            
-            .main-header { 
-                flex-direction: column; 
-                align-items: flex-start; 
-                margin-bottom: 1rem;
-                border-bottom: none;
-            }
             
             /* Revised: GRID Layout to force side-by-side on iPhone */
             .tenant-summary { 
@@ -553,15 +548,37 @@
                 grid-template-columns: 1fr auto !important; /* Left takes space, Right fits content */
                 align-items: center !important;
                 gap: 8px; 
-                padding: 0.8rem 0.5rem;
+                padding: 0.8rem 0; /* Reduced horizontal padding */
+                background-color: transparent; /* Ensure list items blend if needed, or keep white? User asked for transparent container. Keeping item white usually looks best, but let's stick to default list styling which is transparent in some resets, but here .tenant-item has no bg set globally. */
+                border-bottom: 1px solid var(--border-color); /* Keep separator */
+            }
+            
+            /* Clean up list borders for the "transparent" look */
+            .tenant-list {
+                border: none;
+                border-radius: 0;
+            }
+            .tenant-item {
+                background-color: transparent; /* Make items transparent too */
+                border-color: #e9ecef; /* Lighter border */
             }
 
-            /* Truncate text if it gets too long so it doesn't break layout */
+            /* Truncate text and Fix Font Sizes */
             .tenant-summary .tenant-details {
                 min-width: 0;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+            }
+            
+            /* FORCE smaller fonts using em (relative to 9.5px body) instead of rem (relative to 16px root) */
+            .tenant-name { 
+                font-size: 1.2em !important; /* ~11.4px */
+                font-weight: 600;
+            }
+            .tenant-unit { 
+                font-size: 0.9em !important; /* ~8.55px */
+                margin-top: 2px;
             }
 
             /* Ensure indicators align correctly in the grid cell */
@@ -589,26 +606,9 @@
             /* Tighter badges */
             .tenant-status-badge {
                 padding: 0.25em 0.6em;
-                min-width: 60px;
-                font-size: 0.9em;
+                min-width: 50px; /* Smaller min-width */
+                font-size: 0.85em; /* Smaller font */
             }
-            
-            .floor-header h2 { cursor: default; font-size: 1.1em; }
-            
-            /* Calendar Mobile Styles */
-            .calendar-container { 
-                padding: 1rem; 
-                margin-top: 0;
-                width: auto; 
-            }
-            
-            .calendar-weekdays, .calendar-grid { 
-                /* Allow grid to shrink slightly on very small screens */
-                grid-template-columns: repeat(7, 1fr); 
-                gap: 2px; 
-            }
-            
-            .calendar-day { height: 35px; } /* Fixed smaller height for mobile calendar */
             
             /* Fix clipping in expanded view by increasing max-height significantly for mobile */
             .tenant-item.expanded > .tenant-expanded-details {
