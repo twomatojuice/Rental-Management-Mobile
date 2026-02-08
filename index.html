@@ -543,12 +543,27 @@
                 border-bottom: none;
             }
             
-            /* Revised: Indicators to the right */
+            /* Revised: Indicators to the right - HARDENED */
             .tenant-summary { 
-                flex-direction: row; 
-                align-items: center; 
-                justify-content: space-between;
-                gap: 0; 
+                display: flex !important;
+                flex-direction: row !important; 
+                align-items: center !important; 
+                justify-content: space-between !important;
+                flex-wrap: nowrap !important; /* Force single line */
+                gap: 5px; 
+            }
+
+            /* Allow name/unit to shrink if space is tight so indicators stay on line */
+            .tenant-summary .tenant-details {
+                flex: 1;
+                min-width: 0; /* Critical CSS trick for flex containers */
+                margin-right: 5px;
+            }
+
+            /* Prevent indicators from shrinking or wrapping */
+            .tenant-summary > div:last-child {
+                flex-shrink: 0;
+                white-space: nowrap;
             }
             
             .floor-header h2 { cursor: default; }
