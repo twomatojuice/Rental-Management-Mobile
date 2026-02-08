@@ -469,13 +469,14 @@
 
         /* Updated breakpoint to 1024px to capture tablets and landscape phones */
         @media (max-width: 1024px) {
-            /* Apply 75% zoom to mimic desktop preference. 
-               This scales down text, buttons, and allows the 
-               calendar grid to fit on narrower screens.
+            /* 1. iOS Safari does not support 'zoom'. 
+               2. We use font-size: 12px (approx 75% of 16px) to simulate the scale.
+               3. Buttons and sizing use 'em' so they scale relative to this font size.
             */
             body { 
                 padding: 10px; 
-                zoom: 0.75; 
+                font-size: 12px; /* Simulates 75% scale */
+                -webkit-text-size-adjust: 100%; /* Prevent auto-enlarging text on rotate */
             }
             
             /* --- Layout Reordering --- */
@@ -531,11 +532,13 @@
             }
             /* Ensure Paid button is visible and sized proportionally */
             .paid-btn { 
-                min-width: 100px;
+                min-width: 80px;
+                padding: 0.5em 1em; /* Use em to scale with font-size */
             }
 
             /* --- Component Styling --- */
-            h1 { font-size: 2rem; } /* Restore original size, let zoom handle scaling */
+            h1 { font-size: 2em; } /* Relative scaling */
+            
             .main-header { 
                 flex-direction: column; 
                 align-items: flex-start; 
@@ -543,44 +546,46 @@
                 border-bottom: none;
             }
             
-            /* Revised: Indicators to the right - HARDENED */
+            /* Revised: GRID Layout to force side-by-side on iPhone */
             .tenant-summary { 
-                display: flex !important;
-                flex-direction: row !important; 
-                align-items: center !important; 
-                justify-content: space-between !important;
-                flex-wrap: nowrap !important; /* Force single line */
-                gap: 5px; 
+                display: grid !important;
+                grid-template-columns: 1fr auto !important; /* Left takes space, Right fits content */
+                align-items: center !important;
+                gap: 10px; 
+                padding: 0.8rem 0.5rem;
             }
 
-            /* Allow name/unit to shrink if space is tight so indicators stay on line */
+            /* Truncate text if it gets too long so it doesn't break layout */
             .tenant-summary .tenant-details {
-                flex: 1;
-                min-width: 0; /* Critical CSS trick for flex containers */
-                margin-right: 5px;
+                min-width: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
-            /* Prevent indicators from shrinking or wrapping */
+            /* Ensure indicators align correctly in the grid cell */
             .tenant-summary > div:last-child {
-                flex-shrink: 0;
-                white-space: nowrap;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
             }
             
-            .floor-header h2 { cursor: default; }
+            .floor-header h2 { cursor: default; font-size: 1.1em; }
             
             /* Calendar Mobile Styles */
             .calendar-container { 
                 padding: 1rem; 
                 margin-top: 0;
-                width: auto; /* Let it fill the zoomed container */
+                width: auto; 
             }
             
-            /* Ensure calendar fits by letting zoom handle the 72px columns */
             .calendar-weekdays, .calendar-grid { 
-                grid-template-columns: repeat(7, 72px); 
-                gap: 5px; 
-                justify-content: center; /* Center the grid if screen is wider */
+                /* Allow grid to shrink slightly on very small screens */
+                grid-template-columns: repeat(7, 1fr); 
+                gap: 2px; 
             }
+            
+            .calendar-day { height: 50px; } /* Fixed smaller height for mobile calendar */
             
             #set-rate-btn, #modal-renew-btn { display: none !important; }
             .input-row { flex-direction: column; gap: 0; }
