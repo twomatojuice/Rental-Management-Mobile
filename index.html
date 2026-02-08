@@ -470,12 +470,12 @@
         /* Updated breakpoint to 1024px to capture tablets and landscape phones */
         @media (max-width: 1024px) {
             /* 1. iOS Safari does not support 'zoom'. 
-               2. We use font-size: 10.5px (approx 65% of 16px) to simulate the scale.
+               2. We use font-size: 9.5px (scaled down further) to simulate the scale.
                3. Buttons and sizing use 'em' so they scale relative to this font size.
             */
             body { 
                 padding: 10px; 
-                font-size: 10.5px; /* Scaled down further */
+                font-size: 9.5px; /* Reduced from 10.5px */
                 -webkit-text-size-adjust: 100%; /* Prevent auto-enlarging text on rotate */
             }
             
@@ -573,23 +573,23 @@
 
             /* Mobile-specific adjustments for indicators to be smaller */
             .invoice-indicator, .warning-indicator, .late-indicator {
-                width: 16px;
-                height: 16px;
+                width: 14px;
+                height: 14px;
                 margin-right: 4px;
-                font-size: 10px;
+                font-size: 9px;
             }
             
             /* Adjust checkmark inside invoice indicator */
             .invoice-indicator::after {
-                width: 3px;
-                height: 6px;
+                width: 2.5px;
+                height: 5px;
                 border-width: 0 1.5px 1.5px 0;
             }
 
             /* Tighter badges */
             .tenant-status-badge {
                 padding: 0.25em 0.6em;
-                min-width: 70px;
+                min-width: 60px;
                 font-size: 0.9em;
             }
             
@@ -608,8 +608,14 @@
                 gap: 2px; 
             }
             
-            .calendar-day { height: 40px; } /* Fixed smaller height for mobile calendar */
+            .calendar-day { height: 35px; } /* Fixed smaller height for mobile calendar */
             
+            /* Fix clipping in expanded view by increasing max-height significantly for mobile */
+            .tenant-item.expanded > .tenant-expanded-details {
+                padding: 1rem 0.5rem;
+                max-height: 1500px; 
+            }
+
             #set-rate-btn, #modal-renew-btn { display: none !important; }
             .input-row { flex-direction: column; gap: 0; }
         }
