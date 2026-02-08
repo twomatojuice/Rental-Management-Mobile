@@ -515,6 +515,11 @@
                 display: none !important; 
             }
 
+            /* REMOVE SPACING BETWEEN SECTIONS */
+            .floor-container {
+                margin-bottom: 0 !important;
+            }
+
             /* --- Tenant Actions --- */
             /* Show action container */
             .details-actions { 
@@ -549,8 +554,8 @@
                 align-items: center !important;
                 gap: 8px; 
                 padding: 0.8rem 10px; /* Added 10px horizontal padding */
-                background-color: transparent; /* Ensure list items blend if needed, or keep white? User asked for transparent container. Keeping item white usually looks best, but let's stick to default list styling which is transparent in some resets, but here .tenant-item has no bg set globally. */
-                border-bottom: 1px solid var(--border-color); /* Keep separator */
+                background-color: transparent; 
+                border-bottom: none !important; /* REMOVE DOUBLE BORDER (Fixes thick line) */
             }
             
             /* Clean up list borders for the "transparent" look */
@@ -558,9 +563,16 @@
                 border: none;
                 border-radius: 0;
             }
+            
+            /* Ensure single clean border between items */
             .tenant-item {
-                background-color: transparent; /* Make items transparent too */
-                border-color: #e9ecef; /* Lighter border */
+                background-color: transparent; 
+                border-bottom: 1px solid #e9ecef !important; /* Single 1px line */
+            }
+
+            /* Add border to the last item of a section so it separates from the next section */
+            .tenant-item:last-child {
+                border-bottom: 1px solid #e9ecef !important;
             }
 
             /* Truncate text and Fix Font Sizes */
