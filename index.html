@@ -15,12 +15,9 @@
             --secondary-text-color: #6c757d;
             --border-color: #dee2e6;
             --accent-color: #007bff;
-            --accent-bg-faded: #cfe2ff;
-            --accent-text-dark: #003d80;
             --danger-color: #dc3545;
             --danger-bg-faded: #f8d7da;
             --danger-text-dark: #721c24;
-            --success-color: #28a745;
             --warning-color: #fd7e14;
             --warning-bg-faded: #fff3cd;
             --warning-text-dark: #856404;
@@ -378,7 +375,7 @@
         (function() {
             'use strict';
 
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoNBzSqC6pR4QuRTDlxsBOYUj5180vCz1KbeRbWb3P21OLW4ne28XV7HZvhfCbeqpf/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxEV-P0u-4SYxhJdrKWMu4IcIUFzYGvW7MMYQHigrMN2dfsBSHz2iLbZl4xBFDGo8JM/exec";
             const SYNC_INTERVAL = 30000;
 
             const state = {
@@ -410,6 +407,11 @@
                 modalInputs: document.getElementById('modal-inputs'),
                 modalSaveBtn: document.getElementById('modal-save-btn'),
                 modalCancelBtn: document.getElementById('modal-cancel-btn')
+            };
+
+            const ICONS = {
+                prevArrow: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`,
+                nextArrow: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`
             };
 
             async function sendActionToServer(action, payload) {
@@ -712,28 +714,33 @@
                 const activeTenants = state.sections.flatMap(s => s.tenants);
                 const allTenantsForPayments = [...activeTenants, ...state.archivedTenants];
                 
+                // Helper to quickly parse "YYYY-MM-DD" and check if it matches current year/month
+                const checkDateMatch = (dateStr) => {
+                    if (!dateStr) return null;
+                    const parts = dateStr.split('-');
+                    if (parts.length !== 3) return null;
+                    const y = parseInt(parts[0], 10);
+                    const m = parseInt(parts[1], 10) - 1;
+                    if (y === year && m === month) return parseInt(parts[2], 10);
+                    return null;
+                };
+                
                 activeTenants.forEach(tenant => {
                     const cleanDateStr = sanitizeDateString(tenant.currentBillingDate);
-                    if (cleanDateStr) {
-                        const billingDate = new Date(cleanDateStr + 'T00:00:00Z');
-                        if (billingDate.getUTCFullYear() === year && billingDate.getUTCMonth() === month) {
-                            const day = billingDate.getUTCDate();
-                            if (!state.tempCalendarData.billing[day]) state.tempCalendarData.billing[day] = [];
-                            state.tempCalendarData.billing[day].push({ tenant });
-                        }
+                    const day = checkDateMatch(cleanDateStr);
+                    if (day !== null) {
+                        if (!state.tempCalendarData.billing[day]) state.tempCalendarData.billing[day] = [];
+                        state.tempCalendarData.billing[day].push({ tenant });
                     }
                 });
                 
                 allTenantsForPayments.forEach(tenant => {
                     (tenant.paymentHistory || []).forEach(entry => {
                         const cleanDateStr = sanitizeDateString(entry.paidOn);
-                        if (cleanDateStr) {
-                            const paidDate = new Date(cleanDateStr + 'T00:00:00Z');
-                            if (paidDate.getUTCFullYear() === year && paidDate.getUTCMonth() === month) {
-                                const day = paidDate.getUTCDate();
-                                if (!state.tempCalendarData.paid[day]) state.tempCalendarData.paid[day] = [];
-                                state.tempCalendarData.paid[day].push({ tenant, entry });
-                            }
+                        const day = checkDateMatch(cleanDateStr);
+                        if (day !== null) {
+                            if (!state.tempCalendarData.paid[day]) state.tempCalendarData.paid[day] = [];
+                            state.tempCalendarData.paid[day].push({ tenant, entry });
                         }
                     });
                 });
@@ -858,7 +865,8 @@
                         .filter(entry => {
                             const dateStr = sanitizeDateString(entry.paidOn);
                             if (!dateStr) return false;
-                            return new Date(dateStr + 'T00:00:00Z').getUTCFullYear() === displayYear;
+                            const parts = dateStr.split('-');
+                            return parts.length === 3 && parseInt(parts[0], 10) === displayYear;
                         })
                         .reverse()
                         .slice(0, 12);
@@ -869,9 +877,7 @@
                         historyRows = `<tr><td colspan="2" style="text-align: center; padding: 20px;">No records found for ${displayYear}</td></tr>`;
                     }
 
-                    const prevArrow = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
-                    const nextArrow = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
-                    const paginatorHtml = `<div class="year-paginator"><button id="prev-year-btn">${prevArrow}</button><span>${displayYear}</span><button id="next-year-btn">${nextArrow}</button></div>`;
+                    const paginatorHtml = `<div class="year-paginator"><button id="prev-year-btn">${ICONS.prevArrow}</button><span>${displayYear}</span><button id="next-year-btn">${ICONS.nextArrow}</button></div>`;
 
                     const historyHtml = `${paginatorHtml}<div class="table-wrapper"><table class="history-table"><thead><tr><th>Paid Date</th><th>Total</th></tr></thead><tbody>${historyRows}</tbody></table></div>`;
                     
