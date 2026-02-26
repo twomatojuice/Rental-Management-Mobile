@@ -144,45 +144,47 @@
 
         .tenant-summary {
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.75rem;
-            padding: 1rem;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
             cursor: pointer;
             background-color: transparent;
         }
         .tenant-item.expanded > .tenant-summary { background-color: #f6f7f9; }
 
-        .tenant-details { display: flex; flex-direction: column; width: 100%; }
-        .tenant-name { font-weight: 600; font-size: 1rem; margin-bottom: 0.25rem; }
-        .tenant-unit { font-size: 0.875rem; color: var(--secondary-text-color); }
+        .tenant-details { display: flex; flex-direction: column; width: auto; }
+        .tenant-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.15rem; }
+        .tenant-unit { font-size: 0.75rem; color: var(--secondary-text-color); }
 
         .status-indicators {
             display: flex;
             align-items: center;
-            width: 100%;
-            justify-content: flex-start;
-            flex-wrap: wrap;
-            gap: 5px;
+            width: auto;
+            justify-content: flex-end;
+            flex-wrap: nowrap;
+            gap: 4px;
         }
 
         .tenant-status-badge {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 600;
-            padding: 0.3rem 0.6rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 999px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border: 1px solid transparent;
+            white-space: nowrap;
         }
         .status-paid { background-color: var(--paid-bg-color); color: var(--paid-text-color); border-color: var(--paid-text-color); }
         .status-billing { background-color: var(--warning-bg-faded); color: var(--warning-text-dark); border-color: var(--warning-text-dark); }
         .status-overdue { background-color: var(--danger-bg-faded); color: var(--danger-text-dark); border-color: var(--danger-text-dark); }
 
         .invoice-indicator, .visa-indicator, .doc-indicator, .lease-indicator, .late-indicator {
-            width: 20px; height: 20px; background-color: #adb5bd; border-radius: 50%;
+            width: 16px; height: 16px; background-color: #adb5bd; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 700; font-size: 10px; line-height: 1;
+            color: white; font-weight: 700; font-size: 9px; line-height: 1;
         }
         .invoice-indicator::after { content: 'B'; }
         .visa-indicator::after { content: 'V'; }
@@ -566,12 +568,12 @@
                             <span class="tenant-unit">Unit: ${tenant.unit}</span>
                         </div>
                         <div class="status-indicators">
-                            ${statusInfo.badgeHTML}
                             ${tenant.hasGeneratedInvoice ? '<span class="invoice-indicator" title="Invoice Generated"></span>' : ''}
                             ${isLeaseExpiring ? '<span class="lease-indicator" title="Lease Expiring"></span>' : ''}
                             ${isDocExpiring ? '<span class="doc-indicator" title="ID/Passport Expiring"></span>' : ''}
                             ${isVisaExpiring ? '<span class="visa-indicator" title="Visa Expiring"></span>' : ''}
                             ${billingInfo.isLate ? '<span class="late-indicator" title="Late Payment Fee Applied"></span>' : ''}
+                            ${statusInfo.badgeHTML}
                         </div>
                     </div>
                     <div class="tenant-expanded-details"></div>`;
