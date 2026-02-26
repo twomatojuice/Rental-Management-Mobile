@@ -130,19 +130,6 @@
         .paid-event { color: var(--paid-marker-text-color); }
 
         /* Main Container & Tenants */
-        .main-header {
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .floor-container { margin-bottom: 1.5rem; }
-        .floor-header {
-            margin-bottom: 0.75rem;
-            padding: 0.25rem 0;
-        }
-        .floor-header h2 { font-size: 1.1rem; }
-
         .tenant-list {
             list-style: none;
             padding: 0;
@@ -319,9 +306,6 @@
 
         <!-- Tenant Section -->
         <div class="main-container">
-            <div class="main-header">
-                <h1>Tenant Information</h1>
-            </div>
             <div id="sections-container"></div>
         </div>
     </div>
@@ -545,23 +529,22 @@
 
             function render() {
                 DOM.sectionsContainer.innerHTML = '';
-                state.sections.forEach(section => {
-                    DOM.sectionsContainer.appendChild(createSectionElement(section));
-                });
-                renderCalendar();
-            }
-
-            function createSectionElement(section) {
-                const sectionDiv = document.createElement('div');
-                sectionDiv.className = 'floor-container';
-                const header = document.createElement('div');
-                header.className = 'floor-header';
-                header.innerHTML = `<h2>${section.name}</h2>`;
+                
+                // Consolidate all tenants into a single seamless list
                 const tenantList = document.createElement('ul');
                 tenantList.className = 'tenant-list';
-                section.tenants.forEach(tenant => tenantList.appendChild(createTenantListItem(tenant)));
-                sectionDiv.append(header, tenantList);
-                return sectionDiv;
+                
+                state.sections.forEach(section => {
+                    section.tenants.forEach(tenant => {
+                        tenantList.appendChild(createTenantListItem(tenant));
+                    });
+                });
+                
+                if (tenantList.children.length > 0) {
+                    DOM.sectionsContainer.appendChild(tenantList);
+                }
+                
+                renderCalendar();
             }
 
             function createTenantListItem(tenant) {
@@ -734,11 +717,15 @@
                 DOM.calendarGrid.appendChild(gridFragment);
             }
 
-            function showModal({ title, confirmationText, onSave }) {
+            function showModal({ title, confirmationText, onSave, showCancel = true, saveText = "Confirm" }) {
                 state.isModalOpen = true;
                 DOM.modalTitle.textContent = title;
                 DOM.modalInputs.innerHTML = `<div class="modal-confirmation-text">${confirmationText}</div>`;
                 state.currentModalCallback = onSave;
+                
+                DOM.modalCancelBtn.style.display = showCancel ? 'block' : 'none';
+                DOM.modalSaveBtn.textContent = saveText;
+                
                 DOM.modalOverlay.classList.add('show');
             }
 
@@ -755,6 +742,8 @@
                 showModal({
                     title: "Confirm Payment",
                     confirmationText: `Mark payment for ${tenant.name} (Unit ${tenant.unit}) as paid? This will advance the billing date.`,
+                    showCancel: true,
+                    saveText: "Confirm",
                     onSave: () => {
                         const elecUsage = (tenant.elecCurrent || 0) - (tenant.elecPrev || 0);
                         const waterPax = tenant.waterPax || 0;
@@ -831,6 +820,8 @@
                 showModal({ 
                     title: `History: Unit ${tenant.unit}`, 
                     confirmationText: '', 
+                    showCancel: false,
+                    saveText: "Close",
                     onSave: hideModal 
                 });
                 updateHistoryModal();
@@ -856,7 +847,13 @@
                 }).join('');
                 
                 const fullHtml = `<div style="margin-bottom: 15px;">${detailsHtml}</div><div style="display: flex; justify-content: space-between; font-weight: 600; font-size: 1.1rem;"><span>Total</span><span>${totalAmount.toFixed(2)} USD</span></div>`;
-                showModal({ title, confirmationText: fullHtml, onSave: hideModal });
+                showModal({ 
+                    title, 
+                    confirmationText: fullHtml,
+                    showCancel: false,
+                    saveText: "Close", 
+                    onSave: hideModal 
+                });
             }
 
             function init() {
