@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- VARIABLES --- */
         :root {
             --background-color: #f8f9fa;
             --card-background: #ffffff;
@@ -32,7 +31,6 @@
             --paid-marker-text-color: #868e96;
         }
 
-        /* --- GLOBAL & RESET --- */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--background-color);
@@ -45,12 +43,10 @@
         h1 { font-size: 2rem; font-weight: 600; margin: 0; padding: 0; border: none; }
         h2 { font-size: 1.25rem; font-weight: 500; color: var(--secondary-text-color); margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* Remove spinners from number inputs */
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; }
 
-        /* --- LAYOUT --- */
         .app-container {
             display: flex;
             gap: 20px;
@@ -91,7 +87,6 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        /* --- CALENDAR --- */
         .calendar-container {
             flex: 0 0 auto;
             background-color: var(--card-background);
@@ -174,7 +169,6 @@
         .billing-event { color: var(--paid-text-color); }
         .paid-event { color: var(--paid-marker-text-color); }
 
-        /* --- OVERVIEW --- */
         .overview-container {
             background-color: var(--card-background);
             padding: 2rem;
@@ -217,7 +211,6 @@
         .overview-item.total { font-size: 1rem; font-weight: 600; color: var(--primary-text-color); border-bottom: none; }
         .overview-item.total span:last-child { font-size: 1.1rem; }
 
-        /* --- TENANT LIST & ITEMS --- */
         .floor-container { margin-bottom: 2.5rem; }
         .floor-header {
             display: flex;
@@ -272,7 +265,7 @@
         .status-billing { background-color: var(--warning-bg-faded); color: var(--warning-text-dark); border-color: var(--warning-text-dark); }
         .status-overdue { background-color: var(--danger-bg-faded); color: var(--danger-text-dark); border-color: var(--danger-text-dark); }
 
-        .invoice-indicator, .warning-indicator, .late-indicator {
+        .invoice-indicator, .visa-indicator, .doc-indicator, .lease-indicator, .late-indicator {
             width: 20px;
             height: 20px;
             background-color: #adb5bd;
@@ -282,15 +275,13 @@
             justify-content: center;
             margin-right: 8px;
         }
-        .invoice-indicator::after {
-            content: ''; display: block; width: 5px; height: 9px;
-            border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-bottom: 2px;
-        }
-        .warning-indicator, .late-indicator { color: white; font-weight: 800; font-size: 14px; line-height: 1; }
-        .warning-indicator::after { content: '!'; }
+        .invoice-indicator, .visa-indicator, .doc-indicator, .lease-indicator, .late-indicator { color: white; font-weight: 700; font-size: 11px; line-height: 1; padding-top: 1px; }
+        .invoice-indicator::after { content: 'B'; }
+        .visa-indicator::after { content: 'V'; }
+        .doc-indicator::after { content: 'D'; }
+        .lease-indicator::after { content: 'E'; }
         .late-indicator::after { content: 'L'; }
 
-        /* --- EXPANDED DETAILS --- */
         .tenant-expanded-details {
             max-height: 0;
             overflow: hidden;
@@ -327,7 +318,6 @@
 
         .action-buttons-left, .action-buttons-right { display: flex; gap: 0.5rem; }
 
-        /* --- BUTTONS --- */
         button { font-family: inherit; }
         
         #set-rate-btn, #modal-renew-btn, #add-section-btn, .action-buttons-left button, .action-buttons-right button {
@@ -360,7 +350,6 @@
         #add-section-btn:hover { background-color: #f8f9fa; color: var(--accent-color); border-color: var(--accent-color); }
         #add-section-btn:disabled { cursor: wait; background-color: #f8f9fa; }
 
-        /* --- MODAL --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
@@ -404,7 +393,6 @@
         .radio-group label { display: flex; align-items: center; gap: 0.5rem; font-weight: 400; }
         input[type="radio"]:focus { outline: none; }
 
-        /* Custom inputs */
         .modal-input.vehicle-input { padding-right: 2.5rem; }
         .fee-input-group { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; position: relative; }
         .fee-desc-input { flex: 2; padding-left: 2.5rem; }
@@ -431,7 +419,6 @@
         .pin-fee-btn:hover { color: var(--secondary-text-color); }
         .pin-fee-btn.active:hover { color: var(--accent-text-dark); }
 
-        /* Stepper */
         .stepper-container { display: flex; align-items: stretch; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; position: relative; }
         .stepper-container .modal-input { border: none; border-radius: 0; text-align: center; flex-grow: 1; padding-left: 1rem; padding-right: 0.5rem; }
         .stepper-btns { display: flex; flex-direction: column; width: 2rem; justify-content: center; padding-right: 5px; }
@@ -439,7 +426,11 @@
         .stepper-btn:hover { color: var(--primary-text-color); }
         .stepper-btn svg { width: 16px; height: 16px; stroke-width: 2.5; pointer-events: none; }
 
-        .modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color); }
+        .modal-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color); }
+        .modal-actions-right { display: flex; justify-content: flex-end; gap: 0.75rem; }
+        .year-paginator { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--primary-text-color); }
+        .year-paginator button { background: none; border: none; border-radius: 50%; padding: 4px; cursor: pointer; color: var(--secondary-text-color); display: flex; align-items: center; justify-content: center; }
+        .year-paginator button:hover { background-color: #f8f9fa; color: var(--primary-text-color); }
         .modal-btn { padding: 0.5rem 1rem; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s ease; min-width: 90px; text-align: center; }
         .modal-btn-primary { background-color: var(--accent-bg-faded); color: var(--accent-text-dark); border: 1px solid var(--accent-text-dark); }
         .modal-btn-primary:hover { background-color: #b6d4fe; }
@@ -447,7 +438,6 @@
         .modal-btn-secondary { background-color: #ffffff; color: var(--secondary-text-color); border: 1px solid var(--secondary-text-color); }
         .modal-btn-secondary:hover { background-color: #f8f9fa; }
 
-        /* --- CONTEXT MENU --- */
         .context-menu {
             position: absolute; z-index: 1001;
             background-color: var(--card-background);
@@ -459,7 +449,6 @@
         .context-menu-item:hover { background-color: #f8f9fa; }
         .context-menu-divider { height: 1px; background-color: var(--border-color); margin: 0.25rem 0; }
 
-        /* --- RESPONSIVE --- */
         @media (max-width: 1200px) {
             .app-container { flex-direction: column; align-items: center; }
             .left-column { width: 100%; max-width: 900px; box-sizing: border-box; position: static; }
@@ -467,180 +456,28 @@
             .main-container { max-width: 100%; }
         }
 
-        /* Updated breakpoint to 1024px to capture tablets and landscape phones */
-        @media (max-width: 1024px) {
-            /* 1. iOS Safari does not support 'zoom'. 
-               2. We use font-size: 9.5px (scaled down further) to simulate the scale.
-               3. Buttons and sizing use 'em' so they scale relative to this font size.
-            */
-            body { 
-                padding: 10px; 
-                font-size: 9.5px; /* Reduced from 10.5px */
-                -webkit-text-size-adjust: 100%; /* Prevent auto-enlarging text on rotate */
-            }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .main-container, .calendar-container, .overview-container { padding: 1rem; }
+            h1 { font-size: 1.5rem; }
+            .main-header { flex-direction: column; align-items: flex-start; }
+            .tenant-summary { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+            .details-actions { flex-direction: column; gap: 1rem; align-items: stretch; }
+            .action-buttons-left, .action-buttons-right { display: flex; justify-content: center; }
             
-            /* --- Layout Reordering & Visibility --- */
-            .app-container { 
-                flex-direction: column; 
-            }
-
-            /* Hide Calendar (Left Column) entirely */
-            .left-column { 
-                display: none !important; 
-            }
-
-            /* Move Main Container (Tenants) to Top and make Transparent */
-            .main-container { 
-                order: 1; 
-                padding: 0; /* Remove padding */
-                width: 100%;
-                border: none !important;
-                box-shadow: none !important;
-                background-color: transparent !important; /* Transparent BG */
-                margin-bottom: 20px;
-            }
-
-            /* --- Visibility Controls --- */
-            /* Hide Overview completely */
-            .overview-container { display: none !important; }
+            .calendar-weekdays, .calendar-grid { grid-template-columns: repeat(7, 1fr); gap: 2px; width: 100%; }
+            .calendar-day { height: auto; aspect-ratio: 1 / 1; padding: 2px; }
+            .day-number { font-size: clamp(0.6rem, 2.5vw, 0.8rem); margin-bottom: 2px; }
+            .billing-event, .paid-event { font-size: clamp(0.5rem, 2.2vw, 0.75rem); line-height: 1.1; }
             
-            /* Hide Global Actions & Headers */
-            .header-actions, 
-            #add-section-btn, 
-            .context-menu,
-            .main-header, /* Hide "Tenant Information" Title */
-            .floor-header /* Hide "Floor X" Headers */ { 
-                display: none !important; 
-            }
-
-            /* REMOVE SPACING BETWEEN SECTIONS */
-            .floor-container {
-                margin-bottom: 0 !important;
-            }
-
-            /* --- Tenant Actions --- */
-            /* Show action container */
-            .details-actions { 
-                display: flex !important; 
-                flex-direction: row; 
-                justify-content: flex-end; 
-                padding-top: 1rem; 
-                margin-top: 1rem;
-                gap: 0;
-            }
-            /* Hide specific action buttons (Edit, Bill, Delete, History) */
-            .action-buttons-left { display: none !important; }
-            /* Show right action buttons (Paid) */
-            .action-buttons-right { 
-                display: flex; 
-                width: 100%; 
-                justify-content: flex-end; 
-            }
-            /* Ensure Paid button is visible and sized proportionally */
-            .paid-btn { 
-                min-width: 70px;
-                padding: 0.4em 0.8em; /* Use em to scale with font-size */
-                font-size: 1.1em;
-            }
-
-            /* --- Component Styling --- */
-            
-            /* Revised: GRID Layout to force side-by-side on iPhone */
-            .tenant-summary { 
-                display: grid !important;
-                grid-template-columns: 1fr auto !important; /* Left takes space, Right fits content */
-                align-items: center !important;
-                gap: 8px; 
-                padding: 0.8rem 10px; /* Added 10px horizontal padding */
-                background-color: transparent; 
-                border-bottom: none !important; /* REMOVE DOUBLE BORDER (Fixes thick line) */
-            }
-            
-            /* Clean up list borders for the "transparent" look */
-            .tenant-list {
-                border: none;
-                border-radius: 0;
-            }
-            
-            /* Ensure single clean border between items */
-            .tenant-item {
-                background-color: transparent; 
-                border-bottom: 1px solid #e9ecef !important; /* Single 1px line */
-            }
-
-            /* Add border to the last item of a section so it separates from the next section */
-            .tenant-item:last-child {
-                border-bottom: 1px solid #e9ecef !important;
-            }
-
-            /* Truncate text and Fix Font Sizes */
-            .tenant-summary .tenant-details {
-                min-width: 0;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            
-            /* FORCE smaller fonts using em (relative to 9.5px body) instead of rem (relative to 16px root) */
-            .tenant-name { 
-                font-size: 1.2em !important; /* ~11.4px */
-                font-weight: 600;
-                margin-bottom: 0; /* Tighten spacing */
-                min-height: 0; /* Remove spacer */
-            }
-            .tenant-unit { 
-                font-size: 0.9em !important; /* ~8.55px */
-                margin-top: 2px;
-            }
-
-            /* Fix expanded view font size to match mobile base size */
-            .details-grid {
-                font-size: 1em !important;
-            }
-
-            /* Ensure indicators align correctly in the grid cell */
-            .tenant-summary > div:last-child {
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-            }
-
-            /* Mobile-specific adjustments for indicators to be smaller */
-            .invoice-indicator, .warning-indicator, .late-indicator {
-                width: 14px;
-                height: 14px;
-                margin-right: 4px;
-                font-size: 9px;
-            }
-            
-            /* Adjust checkmark inside invoice indicator */
-            .invoice-indicator::after {
-                width: 2.5px;
-                height: 5px;
-                border-width: 0 1.5px 1.5px 0;
-            }
-
-            /* Tighter badges */
-            .tenant-status-badge {
-                padding: 0.25em 0.6em;
-                min-width: 50px; /* Smaller min-width */
-                font-size: 0.85em; /* Smaller font */
-            }
-            
-            /* Fix clipping in expanded view by increasing max-height significantly for mobile */
-            .tenant-item.expanded > .tenant-expanded-details {
-                padding: 1rem 0.5rem;
-                max-height: 1500px; 
-            }
-
-            #set-rate-btn, #modal-renew-btn { display: none !important; }
+            #set-rate-btn, #add-section-btn, #modal-renew-btn, .details-actions, .context-menu { display: none !important; }
+            .overview-container h2, .floor-header h2 { cursor: default; }
             .input-row { flex-direction: column; gap: 0; }
         }
     </style>
 </head>
 <body>
     <div class="app-container">
-        <!-- Left Column: Calendar & Overview -->
         <div class="left-column">
             <div class="calendar-container">
                 <div class="calendar-header">
@@ -664,24 +501,26 @@
                     <h3>Income</h3>
                     <div class="overview-item"><span>Unit total:</span><span id="overview-income-unit">0.00 USD</span></div>
                     <div class="overview-item"><span>Parking total:</span><span id="overview-income-parking">0.00 USD</span></div>
-                    <div class="overview-item"><span>Consumption total:</span><span id="overview-income-consumption">0.00 USD</span></div>
+                    <div class="overview-item"><span>Electricity total:</span><span id="overview-income-electricity">0.00 USD</span></div>
+                    <div class="overview-item"><span>Water total:</span><span id="overview-income-water">0.00 USD</span></div>
                     <div class="overview-item"><span>Other:</span><span id="overview-income-other">0.00 USD</span></div>
                 </div>
                 <div class="overview-section">
                     <h3 id="expense-header">Expense</h3>
                     <div class="overview-item"><span>Employee salary:</span><span id="overview-expense-salary">0.00 USD</span></div>
+                    <div class="overview-item"><span>Electricity cost:</span><span id="overview-expense-electricity-cost">0.00 USD</span></div>
+                    <div class="overview-item"><span>Water cost:</span><span id="overview-expense-water-cost">0.00 USD</span></div>
                     <div class="overview-item"><span>Maintenance:</span><span id="overview-expense-maintenance">0.00 USD</span></div>
-                    <div class="overview-item"><span>Consumption cost:</span><span id="overview-expense-consumption-cost">0.00 USD</span></div>
                     <div class="overview-item"><span>Other:</span><span id="overview-expense-other">0.00 USD</span></div>
                 </div>
                 <div class="overview-totals">
-                    <div class="overview-item total"><span>Total Profit:</span><span id="overview-total-profit">0.00 USD</span></div>
-                    <div class="overview-item total"><span>Net Profit:</span><span id="overview-net-profit">0.00 USD</span></div>
+                    <div class="overview-item total"><span>Est. remaining payment:</span><span id="overview-est-remaining">0.00 USD</span></div>
+                    <div class="overview-item total"><span>Revenue:</span><span id="overview-total-profit">0.00 USD</span></div>
+                    <div class="overview-item total"><span>Profit:</span><span id="overview-net-profit">0.00 USD</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Column: Tenant Information -->
         <div class="main-container">
             <div class="main-header">
                 <h1>Tenant Information</h1>
@@ -694,7 +533,6 @@
         </div>
     </div>
 
-    <!-- Modals & Context Menu -->
     <div id="modal-overlay" class="modal-overlay">
         <div id="modal-content" class="modal-content">
             <div class="modal-header">
@@ -703,36 +541,24 @@
             </div>
             <div id="modal-inputs"></div>
             <div class="modal-actions">
-                <button id="modal-cancel-btn" class="modal-btn modal-btn-secondary">Cancel</button>
-                <button id="modal-save-btn" class="modal-btn modal-btn-primary">Save</button>
+                <div id="modal-footer-left"></div>
+                <div class="modal-actions-right">
+                    <button id="modal-cancel-btn" class="modal-btn modal-btn-secondary">Cancel</button>
+                    <button id="modal-save-btn" class="modal-btn modal-btn-primary">Save</button>
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- LOGIN OVERLAY -->
-    <div id="login-overlay" class="modal-overlay" style="display: flex; z-index: 2000; background-color: var(--background-color);">
-        <div class="modal-content" style="max-width: 320px; text-align: center;">
-            <h3 style="margin-bottom: 1.5rem;">Restricted Access</h3>
-            <div class="input-group">
-                <input type="password" id="login-pin" class="modal-input" placeholder="Enter PIN" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem; margin-bottom: 1rem;" autocomplete="off">
-            </div>
-            <button id="login-btn" class="modal-btn modal-btn-primary" style="width: 100%; padding: 0.75rem;">Unlock Application</button>
-            <p id="login-error" style="color: var(--danger-color); margin-top: 15px; font-size: 0.9rem; display: none;">Invalid PIN. Please try again.</p>
-        </div>
-    </div>
-
     <div id="context-menu" class="context-menu" style="display: none;"></div>
 
     <script>
         (function() {
             'use strict';
 
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxEV-P0u-4SYxhJdrKWMu4IcIUFzYGvW7MMYQHigrMN2dfsBSHz2iLbZl4xBFDGo8JM/exec";
+            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxoNBzSqC6pR4QuRTDlxsBOYUj5180vCz1KbeRbWb3P21OLW4ne28XV7HZvhfCbeqpf/exec";
             const SYNC_INTERVAL = 30000;
 
             const state = {
-                pin: localStorage.getItem('tenant_app_pin') || "", // Load saved PIN
-                isAuthenticated: false,
                 rates: { electricity: 0.25, water: 1.0, parking: 50.0, lateFee: 5.0 },
                 sections: [],
                 archivedTenants: [],
@@ -765,11 +591,10 @@
                     'sections-container', 'add-section-btn', 'set-rate-btn', 'modal-overlay',
                     'modal-title', 'modal-renew-btn', 'modal-inputs', 'modal-save-btn',
                     'modal-cancel-btn', 'context-menu', 'calendar-grid', 'calendar-month-year',
-                    'prev-month-btn', 'next-month-btn', 'overview-income-unit', 'overview-income-consumption',
-                    'overview-income-parking', 'overview-income-other', 'overview-expense-salary',
-                    'overview-expense-maintenance', 'overview-expense-consumption-cost', 'overview-expense-other',
-                    'overview-total-profit', 'overview-net-profit', 'expense-header', 'overview-header',
-                    'login-overlay', 'login-pin', 'login-btn', 'login-error' // Added Login Elements
+                    'prev-month-btn', 'next-month-btn', 'overview-income-unit', 'overview-income-electricity',
+                    'overview-income-water', 'overview-income-parking', 'overview-income-other', 'overview-expense-salary',
+                    'overview-expense-electricity-cost', 'overview-expense-water-cost', 'overview-expense-maintenance', 'overview-expense-other',
+                    'overview-total-profit', 'overview-net-profit', 'expense-header', 'overview-header', 'overview-est-remaining'
                 ];
                 ids.forEach(id => {
                     const camelCaseId = id.replace(/-(\w)/g, (_, c) => c.toUpperCase());
@@ -783,14 +608,14 @@
                 try {
                     const response = await fetch(SCRIPT_URL, {
                         method: 'POST',
-                        body: JSON.stringify({ action, payload, pin: state.pin }) // Send PIN with POST
+                        body: JSON.stringify({ action, payload })
                     });
                     const result = await response.json();
                     if (result.status === "success") {
                         return result.data;
                     } else {
                         console.error("Action failed:", result.message);
-                        showError("Server Error: " + result.message);
+                        showError("Could not process request on the server. Error: " + result.message);
                         return null;
                     }
                 } catch (error) {
@@ -803,29 +628,15 @@
             }
 
             async function loadDataFromSheet() {
-                if (state.isModalOpen || state.isSaving || !state.pin) return; // Don't load without PIN
+                if (state.isModalOpen || state.isSaving) return;
                 try {
-                    // Send PIN with GET request
-                    const response = await fetch(`${SCRIPT_URL}?pin=${encodeURIComponent(state.pin)}`);
+                    const response = await fetch(SCRIPT_URL);
                     if (!response.ok) throw new Error(`Failed to load data. Status: ${response.status}`);
 
                     const freshData = await response.json();
-                    
-                    // Check if backend returned an error (Invalid PIN)
-                    if (freshData.status === 'error') {
-                        throw new Error(freshData.message);
-                    }
-
                     if (!freshData) {
                         console.warn("Received empty data from server.");
                         return;
-                    }
-
-                    // If we get here, authentication is successful
-                    if (!state.isAuthenticated) {
-                        state.isAuthenticated = true;
-                        DOM.loginOverlay.style.display = 'none';
-                        localStorage.setItem('tenant_app_pin', state.pin); // Save valid PIN
                     }
 
                     const currentDataSignature = JSON.stringify({
@@ -875,15 +686,7 @@
                         render();
                     }
                 } catch (error) {
-                    console.error("Sync Error:", error);
-                    if (error.message === "Invalid Access PIN") {
-                        state.isAuthenticated = false;
-                        state.pin = "";
-                        localStorage.removeItem('tenant_app_pin');
-                        DOM.loginOverlay.style.display = 'flex';
-                        DOM.loginError.textContent = "Invalid PIN. Please try again.";
-                        DOM.loginError.style.display = 'block';
-                    }
+                    console.error("Could not sync with Google Sheet:", error);
                 }
             }
 
@@ -1041,7 +844,9 @@
                 listItem.dataset.tenantId = tenant.id;
                 if (tenant.id === state.currentlyExpandedTenantId) listItem.classList.add('expanded');
 
-                const hasExpiryWarning = isDateExpiring(tenant.leaseEnd) || isDateExpiring(tenant.idExpiry) || isDateExpiring(tenant.passportExpiry) || isDateExpiring(tenant.visaExpiry);
+                const isLeaseExpiring = isDateExpiring(tenant.leaseEnd);
+                const isDocExpiring = isDateExpiring(tenant.idExpiry) || isDateExpiring(tenant.passportExpiry);
+                const isVisaExpiring = isDateExpiring(tenant.visaExpiry);
 
                 listItem.innerHTML = `
                     <div class="tenant-summary">
@@ -1051,7 +856,9 @@
                         </div>
                         <div style="display: flex; align-items: center;">
                             ${tenant.hasGeneratedInvoice ? '<span class="invoice-indicator" title="Invoice Generated"></span>' : ''}
-                            ${hasExpiryWarning ? '<span class="warning-indicator" title="Expiring Documents or Lease"></span>' : ''} 
+                            ${isLeaseExpiring ? '<span class="lease-indicator" title="Lease Expiring"></span>' : ''}
+                            ${isDocExpiring ? '<span class="doc-indicator" title="ID/Passport Expiring"></span>' : ''}
+                            ${isVisaExpiring ? '<span class="visa-indicator" title="Visa Expiring"></span>' : ''}
                             ${billingInfo.isLate ? '<span class="late-indicator" title="Late Payment Fee Applied"></span>' : ''}
                             ${statusInfo.badgeHTML}
                         </div>
@@ -1119,8 +926,20 @@
                 const date = state.calendarDate;
                 const year = date.getFullYear();
                 const month = date.getMonth();
-                let totals = { incomeUnit: 0, incomeConsumption: 0, incomeParking: 0, incomeOther: 0 };
-                const allTenantsForPayments = [...state.sections.flatMap(s => s.tenants), ...state.archivedTenants];
+                let totals = { incomeUnit: 0, incomeElectricity: 0, incomeWater: 0, incomeParking: 0, incomeOther: 0 };
+                let estRemaining = 0;
+                const activeTenants = state.sections.flatMap(s => s.tenants);
+                const allTenantsForPayments = [...activeTenants, ...state.archivedTenants];
+
+                activeTenants.forEach(tenant => {
+                    const cleanDateStr = sanitizeDateString(tenant.currentBillingDate);
+                    if (cleanDateStr) {
+                        const billingDate = new Date(cleanDateStr + 'T00:00:00Z');
+                        if (billingDate.getUTCFullYear() === year && billingDate.getUTCMonth() === month) {
+                            estRemaining += getBillingInfo(tenant).totalBilling;
+                        }
+                    }
+                });
 
                 allTenantsForPayments.forEach(tenant => {
                     (tenant.paymentHistory || []).forEach(entry => {
@@ -1131,25 +950,34 @@
                             totals.incomeOther += entry.other || 0;
                             const elecUsage = parseFloat(entry.elecUsage) || 0;
                             const waterPax = parseFloat(entry.waterPax) || 0;
-                            totals.incomeConsumption += (elecUsage * state.rates.electricity) + (waterPax * state.rates.water);
+                            totals.incomeElectricity += (elecUsage * state.rates.electricity);
+                            totals.incomeWater += (waterPax * state.rates.water);
                         }
                     });
                 });
 
                 const expenseKey = `${year}-${month + 1}`;
-                const currentExpenses = state.expenses[expenseKey] || { salary: 0, maintenance: 0, consumptionCost: 0, other: 0 };
+                const currentExpenses = state.expenses[expenseKey] || { salary: 0, electricityCost: 0, waterCost: 0, maintenance: 0, other: 0 };
+                
+                if (currentExpenses.consumptionCost && !currentExpenses.electricityCost) {
+                    currentExpenses.electricityCost = currentExpenses.consumptionCost;
+                }
+
                 const totalIncome = Object.values(totals).reduce((sum, val) => sum + val, 0);
-                const totalExpense = Object.values(currentExpenses).reduce((sum, val) => sum + val, 0);
+                const totalExpense = (currentExpenses.salary || 0) + (currentExpenses.electricityCost || 0) + (currentExpenses.waterCost || 0) + (currentExpenses.maintenance || 0) + (currentExpenses.other || 0);
                 const totalProfit = totalIncome;
                 const netProfit = totalIncome - totalExpense;
 
+                DOM.overviewEstRemaining.textContent = `${estRemaining.toFixed(2)} USD`;
                 DOM.overviewIncomeUnit.textContent = `${totals.incomeUnit.toFixed(2)} USD`;
-                DOM.overviewIncomeConsumption.textContent = `${totals.incomeConsumption.toFixed(2)} USD`;
+                DOM.overviewIncomeElectricity.textContent = `${totals.incomeElectricity.toFixed(2)} USD`;
+                DOM.overviewIncomeWater.textContent = `${totals.incomeWater.toFixed(2)} USD`;
                 DOM.overviewIncomeParking.textContent = `${totals.incomeParking.toFixed(2)} USD`;
                 DOM.overviewIncomeOther.textContent = `${totals.incomeOther.toFixed(2)} USD`;
                 DOM.overviewExpenseSalary.textContent = `${(currentExpenses.salary || 0).toFixed(2)} USD`;
+                DOM.overviewExpenseElectricityCost.textContent = `${(currentExpenses.electricityCost || 0).toFixed(2)} USD`;
+                DOM.overviewExpenseWaterCost.textContent = `${(currentExpenses.waterCost || 0).toFixed(2)} USD`;
                 DOM.overviewExpenseMaintenance.textContent = `${(currentExpenses.maintenance || 0).toFixed(2)} USD`;
-                DOM.overviewExpenseConsumptionCost.textContent = `${(currentExpenses.consumptionCost || 0).toFixed(2)} USD`;
                 DOM.overviewExpenseOther.textContent = `${(currentExpenses.other || 0).toFixed(2)} USD`;
                 DOM.overviewTotalProfit.textContent = `${totalProfit.toFixed(2)} USD`;
                 DOM.overviewNetProfit.textContent = `${netProfit.toFixed(2)} USD`;
@@ -1234,10 +1062,12 @@
                     DOM.modalInputsContainer.removeEventListener('input', currentValidationHandler);
                     currentValidationHandler = null;
                 }
-                const { title, fields = [], initialValues = {}, onSave, onCancel, isConfirmation = false, confirmationText = "", isEdit = false, isDelete = false, saveButtonText = "Save", requiredFields = [], validationRules = [] } = config;
+                const { title, fields = [], initialValues = {}, onSave, onCancel, isConfirmation = false, confirmationText = "", isEdit = false, isDelete = false, saveButtonText = "Save", requiredFields = [], validationRules = [], footerLeftHtml = "" } = config;
 
                 DOM.modalTitle.textContent = title;
                 DOM.modalInputsContainer.innerHTML = '';
+                const footerLeft = document.getElementById('modal-footer-left');
+                if (footerLeft) footerLeft.innerHTML = footerLeftHtml;
                 DOM.modalRenewBtn.style.display = isEdit ? 'block' : 'none';
                 DOM.modalCancelBtn.style.display = 'inline-block';
                 const modalContent = DOM.modalOverlay.querySelector('.modal-content');
@@ -1542,10 +1372,49 @@
                 const allTenants = [...state.sections.flatMap(s => s.tenants), ...state.archivedTenants];
                 const tenant = allTenants.find(t => t.id === tenantId);
                 if (!tenant?.paymentHistory?.length) return;
-                const historyRows = [...tenant.paymentHistory].reverse().map(entry => `<tr><td>${formatDate(entry.paidOn)}</td><td>${entry.elecUsage}</td><td>${entry.waterPax || 0}</td><td>${(entry.rent || 0).toFixed(2)}</td><td>${(entry.other || 0).toFixed(2)}</td><td>${(entry.parking || 0).toFixed(2)}</td><td><strong>${(entry.totalPaid || 0).toFixed(2)}</strong></td></tr>`).join('');
-                const historyHtml = `<style>.history-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; table-layout: fixed; } .history-table th, .history-table td { padding: 8px 6px; border: 1px solid var(--border-color); text-align: right; word-wrap: break-word; } .history-table th:first-child, .history-table td:first-child { text-align: left; width: 80px;} .history-table th { background-color: #f8f9fa; font-weight: 500; }</style><table class="history-table"><thead><tr><th>Paid Date</th><th>Elec.</th><th>Pax</th><th>Rent</th><th>Other</th><th>Parking</th><th>Total</th></tr></thead><tbody>${historyRows}</tbody></table>`;
-                showModal({ title: `Payment History: ${tenant.name}`, isConfirmation: true, confirmationText: historyHtml, saveButtonText: "Close", onSave: hideModal, isHistory: true });
-                DOM.modalCancelBtn.style.display = 'none';
+                
+                let displayYear = new Date().getFullYear();
+
+                function renderHistory() {
+                    const filteredHistory = tenant.paymentHistory
+                        .filter(entry => {
+                            const dateStr = sanitizeDateString(entry.paidOn);
+                            if (!dateStr) return false;
+                            return new Date(dateStr + 'T00:00:00Z').getUTCFullYear() === displayYear;
+                        })
+                        .reverse()
+                        .slice(0, 12);
+
+                    let historyRows = filteredHistory.map(entry => `<tr><td>${formatDate(entry.paidOn)}</td><td>${entry.elecUsage}</td><td>${entry.waterPax || 0}</td><td>${(entry.rent || 0).toFixed(2)}</td><td>${(entry.other || 0).toFixed(2)}</td><td>${(entry.parking || 0).toFixed(2)}</td><td><strong>${(entry.totalPaid || 0).toFixed(2)}</strong></td></tr>`).join('');
+                    
+                    if (filteredHistory.length === 0) {
+                        historyRows = `<tr><td colspan="7" style="text-align: center; padding: 20px;">No records found for ${displayYear}</td></tr>`;
+                    }
+
+                    const historyHtml = `<style>.table-wrapper { border-radius: 8px; overflow-x: auto; border: 1px solid var(--border-color); } .history-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; table-layout: fixed; margin: 0; min-width: 600px; } .history-table th, .history-table td { padding: 8px 6px; border-bottom: 1px solid var(--border-color); border-right: 1px solid var(--border-color); text-align: right; word-wrap: break-word; } .history-table th:last-child, .history-table td:last-child { border-right: none; } .history-table tbody tr:last-child td { border-bottom: none; } .history-table th:first-child, .history-table td:first-child { text-align: left; width: 110px;} .history-table th { background-color: #f8f9fa; font-weight: 500; }</style><div class="table-wrapper"><table class="history-table"><thead><tr><th>Paid Date</th><th>Elec.</th><th>Pax</th><th>Rent</th><th>Other</th><th>Parking</th><th>Total</th></tr></thead><tbody>${historyRows}</tbody></table></div>`;
+                    
+                    const prevArrow = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
+                    const nextArrow = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
+                    const paginatorHtml = `<div class="year-paginator"><button id="prev-year-btn">${prevArrow}</button><span>${displayYear}</span><button id="next-year-btn">${nextArrow}</button></div>`;
+
+                    showModal({ 
+                        title: `Payment History: ${tenant.name}`, 
+                        isConfirmation: true, 
+                        confirmationText: historyHtml, 
+                        saveButtonText: "Close", 
+                        onSave: hideModal, 
+                        isHistory: true,
+                        footerLeftHtml: paginatorHtml
+                    });
+                    DOM.modalCancelBtn.style.display = 'none';
+
+                    setTimeout(() => {
+                        document.getElementById('prev-year-btn')?.addEventListener('click', () => { displayYear--; renderHistory(); });
+                        document.getElementById('next-year-btn')?.addEventListener('click', () => { displayYear++; renderHistory(); });
+                    }, 0);
+                }
+                
+                renderHistory();
             }
 
             function handleEndLeaseClick(tenantId) {
@@ -1692,55 +1561,14 @@
                 });
             }
 
-            function handleLogin() {
-                const pinInput = DOM.loginPin.value.trim();
-                if (!pinInput && !state.pin) {
-                    DOM.loginError.textContent = "Please enter a PIN";
-                    DOM.loginError.style.display = 'block';
-                    return;
-                }
-                
-                if (pinInput) state.pin = pinInput;
-                
-                DOM.loginBtn.textContent = "Verifying...";
-                DOM.loginBtn.disabled = true;
-                DOM.loginError.style.display = 'none';
-
-                // Attempt to load data to verify PIN
-                loadDataFromSheet().then(() => {
-                    if (state.isAuthenticated) {
-                        DOM.loginBtn.textContent = "Unlock Application";
-                        DOM.loginBtn.disabled = false;
-                        DOM.loginPin.value = "";
-                    } else {
-                        // Reset if failed
-                        DOM.loginBtn.textContent = "Unlock Application";
-                        DOM.loginBtn.disabled = false;
-                    }
-                });
-            }
-
             function init() {
                 cacheDOMElements();
-                
-                // Login Event Listeners
-                DOM.loginBtn.addEventListener('click', handleLogin);
-                DOM.loginPin.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') handleLogin();
-                });
-
                 DOM.addSectionBtn.textContent = 'Loading...';
                 DOM.addSectionBtn.disabled = true;
-
-                // Check for saved PIN and try to auto-login
-                if (state.pin) {
-                    handleLogin();
-                } else {
-                    // Just ensure UI is ready, wait for user input
+                loadDataFromSheet().then(() => render()).finally(() => {
                     DOM.addSectionBtn.textContent = '+ add section';
                     DOM.addSectionBtn.disabled = false;
-                }
-
+                });
                 setInterval(loadDataFromSheet, SYNC_INTERVAL);
 
                 document.body.addEventListener('click', (event) => {
@@ -1835,21 +1663,28 @@
                 function handleEditExpensesClick() {
                     const date = state.calendarDate;
                     const expenseKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
-                    const initialValues = state.expenses[expenseKey] || { salary: 0, maintenance: 0, consumptionCost: 0, other: 0 };
+                    const initialValues = state.expenses[expenseKey] || { salary: 0, electricityCost: 0, waterCost: 0, maintenance: 0, other: 0 };
+                    
+                    if (initialValues.consumptionCost && !initialValues.electricityCost) {
+                        initialValues.electricityCost = initialValues.consumptionCost;
+                    }
+                    
                     showModal({
                         title: `Edit Expenses for ${date.toLocaleString('en-US', { month: 'long', year: 'numeric' })}`,
                         fields: [
                             { id: 'salary', label: 'Employee Salary (USD)', type: 'number' },
+                            { id: 'electricityCost', label: 'Electricity Cost (USD)', type: 'number' },
+                            { id: 'waterCost', label: 'Water Cost (USD)', type: 'number' },
                             { id: 'maintenance', label: 'Maintenance (USD)', type: 'number' },
-                            { id: 'consumptionCost', label: 'Consumption Cost (USD)', type: 'number' },
                             { id: 'other', label: 'Other (USD)', type: 'number' },
                         ],
                         initialValues: initialValues,
                         onSave: (values) => {
                             const newValues = {
                                 salary: parseFloat(values.salary) || 0,
+                                electricityCost: parseFloat(values.electricityCost) || 0,
+                                waterCost: parseFloat(values.waterCost) || 0,
                                 maintenance: parseFloat(values.maintenance) || 0,
-                                consumptionCost: parseFloat(values.consumptionCost) || 0,
                                 other: parseFloat(values.other) || 0,
                             };
                             state.expenses[expenseKey] = newValues;
@@ -1995,7 +1830,6 @@
             document.addEventListener('DOMContentLoaded', init);
         })();
 
-        // --- INVOICE GENERATOR (Global) ---
         function createInvoiceHTML(data, language = 'English') {
             const today = new Date();
             const dueDate = new Date(data.currentBillingDate);
@@ -2023,67 +1857,13 @@
 
             const logoHTML = data.logoUrl ? `<img src="${data.logoUrl}" alt="Apartment Logo" class="invoice-logo">` : `<div class="logo-placeholder"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>Your Logo</div>`;
             const qrCodeUrl = "https://iili.io/fDUwQ6X.jpg";
-            const filler = '<p style="justify-content: flex-end; color: #adb5bd;">-</p>';
 
-            // Helper to generate content
-            const generateContent = () => `
-                <div class="invoice-content">
-                    <header class="invoice-header">
-                        <div class="logo-area">${logoHTML}</div>
-                        <div class="invoice-title-area">
-                            <h1>${t.invoice}</h1>
-                            <p>Norkor Thom Apartment<br>St. 464 No. 78 Chamkarmon<br>12311 Toul Tumpoung 1<br>Phnom Penh</p>
-                        </div>
-                    </header>
-                    <section class="tenant-details-grid">
-                        <div class="tenant-info">
-                            <p><strong>${data.name}</strong></p>
-                            <p>${t.unit} ${data.unit}</p>
-                            <br>
-                            <p><strong>${t.monthlyRent}</strong></p>
-                            <p>${Number(data.rent).toFixed(2)} USD</p>
-                        </div>
-                        <div class="invoice-dates">
-                            <p><strong>${t.dateOfIssue}:</strong> ${formattedToday}</p>
-                            <p><strong>${t.dueDate}:</strong> ${formattedDueDate}</p>
-                        </div>
-                        <div class="amount-due">
-                            <p>${t.invoiceNumber}: ${invoiceNumber}</p>
-                            <strong><span class="amount-due-label">${t.amountDue}:</span> <span class="amount-due-value">${data.totalBilling.toFixed(2)}</span></strong>
-                            <span>USD</span>
-                        </div>
-                    </section>
-                    <main class="charges-grid">
-                        <div class="charge-item">
-                            <h3>${t.electricity}</h3>
-                            <p><span>${t.previous}:</span> <span>${data.elecPrev} Kwh</span></p>
-                            <p><span>${t.current}:</span> <span>${data.elecCurrent} Kwh</span></p>
-                            <p><span>${t.usage}:</span> <span>${data.elecUsage.toFixed(2)} Kwh</span></p>
-                            <hr style="border: none; border-top: 1px solid #f1f3f5; margin: 5px 0;">
-                            <p><span>${t.rate}:</span> <span>${data.rates.electricity.toFixed(2)} / Kwh</span></p>
-                            <p class="total"><span>${t.total}:</span> <span>${data.elecBilling.toFixed(2)} USD</span></p>
-                        </div>
-                        <div class="charge-item">
-                            <h3>${t.water}</h3>
-                            <p><span>Pax:</span> <span>${data.waterPax || 0}</span></p>
-                            ${filler}
-                            ${filler}
-                            <hr style="border: none; border-top: 1px solid #f1f3f5; margin: 5px 0;">
-                            <p><span>${t.rate}:</span> <span>${data.rates.water.toFixed(2)} / Pax</span></p>
-                            <p class="total"><span>${t.total}:</span> <span>${data.waterBilling.toFixed(2)} USD</span></p>
-                        </div>
-                        <div class="charge-item">
-                            <h3>${t.parkingOther}</h3>
-                            <p><span>${t.vehicles}:</span> <span>${data.parkingBilling.toFixed(2)} USD</span></p>
-                            <p><span>${t.other}:</span> <span>${Number(data.other).toFixed(2)} USD</span></p>
-                            ${data.lateFee > 0 ? `<p><span>Late Fee:</span> <span>${Number(data.lateFee).toFixed(2)} USD</span></p>` : filler}
-                            <hr style="border: none; border-top: 1px solid transparent; margin: 5px 0;">
-                            ${filler}
-                            <p class="total"><span>${t.total}:</span> <span>${(data.parkingBilling + Number(data.other) + Number(data.lateFee || 0)).toFixed(2)} USD</span></p>
-                        </div>
-                    </main>
-                </div>
-            `;
+            let otherFeesHTML = '';
+            if (Array.isArray(data.customFees) && data.customFees.length > 0) {
+                otherFeesHTML = data.customFees.map(f => `<p><span>${f.description}:</span> <span>${Number(f.amount).toFixed(2)} USD</span></p>`).join('');
+            } else {
+                otherFeesHTML = `<p><span>${t.other}:</span> <span>${Number(data.other || 0).toFixed(2)} USD</span></p>`;
+            }
 
             return `
             <!DOCTYPE html>
@@ -2122,6 +1902,7 @@
                     .amount-due strong { display: block; font-size: 1.4rem; font-weight: 700; color: var(--primary-text-color); }
                     .amount-due span { font-size: 1rem; font-weight: 500; color: var(--secondary-text-color); }
                     .charges-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color); margin-bottom: auto; }
+                    .charge-item { display: flex; flex-direction: column; height: 100%; }
                     .charge-item h3 { font-size: 0.85rem; font-weight: 600; margin: 0 0 5px 0; padding-bottom: 4px; border-bottom: 1px solid #f1f3f5; color: var(--primary-text-color); }
                     .charge-item p { display: flex; justify-content: space-between; margin: 2px 0; font-size: 0.8rem; color: var(--secondary-text-color); }
                     .charge-item p span:last-child { font-weight: 500; color: var(--primary-text-color); }
@@ -2131,10 +1912,40 @@
             <body>
                 <div class="a4-page-container">
                     <div class="invoice-half">
-                        ${generateContent()}
+                        <div class="invoice-content">
+                            <header class="invoice-header">
+                                <div class="logo-area">${logoHTML}</div>
+                                <div class="invoice-title-area"><h1>${t.invoice}</h1><p>Norkor Thom Apartment<br>St. 464 No. 78 Chamkarmon<br>12311 Toul Tumpoung 1<br>Phnom Penh</p></div>
+                            </header>
+                            <section class="tenant-details-grid">
+                                <div class="tenant-info"><p><strong>${data.name}</strong></p><p>${t.unit} ${data.unit}</p><br><p><strong>${t.monthlyRent}</strong></p><p>${Number(data.rent).toFixed(2)} USD</p></div>
+                                <div class="invoice-dates"><p><strong>${t.dateOfIssue}:</strong> ${formattedToday}</p><p><strong>${t.dueDate}:</strong> ${formattedDueDate}</p></div>
+                                <div class="amount-due"><p>${t.invoiceNumber}: ${invoiceNumber}</p><strong><span class="amount-due-label">${t.amountDue}:</span> <span class="amount-due-value">${data.totalBilling.toFixed(2)}</span></strong><span>USD</span></div>
+                            </section>
+                            <main class="charges-grid">
+                                <div class="charge-item"><h3>${t.electricity}</h3><p><span>${t.previous}:</span> <span>${data.elecPrev} Kwh</span></p><p><span>${t.current}:</span> <span>${data.elecCurrent} Kwh</span></p><p><span>${t.usage}:</span> <span>${data.elecUsage.toFixed(2)} Kwh</span></p><hr style="border: none; border-top: 1px solid #f1f3f5; margin-top: auto; margin-bottom: 5px;"><p><span>${t.rate}:</span> <span>${data.rates.electricity.toFixed(2)} / Kwh</span></p><p class="total"><span>${t.total}:</span> <span>${data.elecBilling.toFixed(2)} USD</span></p></div>
+                                <div class="charge-item"><h3>${t.water}</h3><p><span>Pax:</span> <span>${data.waterPax || 0}</span></p><hr style="border: none; border-top: 1px solid #f1f3f5; margin-top: auto; margin-bottom: 5px;"><p><span>${t.rate}:</span> <span>${data.rates.water.toFixed(2)} / Pax</span></p><p class="total"><span>${t.total}:</span> <span>${data.waterBilling.toFixed(2)} USD</span></p></div>
+                                <div class="charge-item"><h3>${t.parkingOther}</h3><p><span>${t.vehicles}:</span> <span>${data.parkingBilling.toFixed(2)} USD</span></p>${otherFeesHTML}${data.lateFee > 0 ? `<p><span>Late Fee:</span> <span>${Number(data.lateFee).toFixed(2)} USD</span></p>` : ''}<hr style="border: none; border-top: 1px solid transparent; margin-top: auto; margin-bottom: 5px;"><p class="total"><span>${t.total}:</span> <span>${(data.parkingBilling + Number(data.other) + Number(data.lateFee || 0)).toFixed(2)} USD</span></p></div>
+                            </main>
+                        </div>
                     </div>
                     <div class="invoice-half">
-                        ${generateContent()}
+                        <div class="invoice-content">
+                            <header class="invoice-header">
+                                <div class="logo-area">${logoHTML}</div>
+                                <div class="invoice-title-area"><h1>${t.invoice}</h1><p>Norkor Thom Apartment<br>St. 464 No. 78 Chamkarmon<br>12311 Toul Tumpoung 1<br>Phnom Penh</p></div>
+                            </header>
+                            <section class="tenant-details-grid">
+                                <div class="tenant-info"><p><strong>${data.name}</strong></p><p>${t.unit} ${data.unit}</p><br><p><strong>${t.monthlyRent}</strong></p><p>${Number(data.rent).toFixed(2)} USD</p></div>
+                                <div class="invoice-dates"><p><strong>${t.dateOfIssue}:</strong> ${formattedToday}</p><p><strong>${t.dueDate}:</strong> ${formattedDueDate}</p></div>
+                                <div class="amount-due"><p>${t.invoiceNumber}: ${invoiceNumber}</p><strong><span class="amount-due-label">${t.amountDue}:</span> <span class="amount-due-value">${data.totalBilling.toFixed(2)}</span></strong><span>USD</span></div>
+                            </section>
+                            <main class="charges-grid">
+                                <div class="charge-item"><h3>${t.electricity}</h3><p><span>${t.previous}:</span> <span>${data.elecPrev} Kwh</span></p><p><span>${t.current}:</span> <span>${data.elecCurrent} Kwh</span></p><p><span>${t.usage}:</span> <span>${data.elecUsage.toFixed(2)} Kwh</span></p><hr style="border: none; border-top: 1px solid #f1f3f5; margin-top: auto; margin-bottom: 5px;"><p><span>${t.rate}:</span> <span>${data.rates.electricity.toFixed(2)} / Kwh</span></p><p class="total"><span>${t.total}:</span> <span>${data.elecBilling.toFixed(2)} USD</span></p></div>
+                                <div class="charge-item"><h3>${t.water}</h3><p><span>Pax:</span> <span>${data.waterPax || 0}</span></p><hr style="border: none; border-top: 1px solid #f1f3f5; margin-top: auto; margin-bottom: 5px;"><p><span>${t.rate}:</span> <span>${data.rates.water.toFixed(2)} / Pax</span></p><p class="total"><span>${t.total}:</span> <span>${data.waterBilling.toFixed(2)} USD</span></p></div>
+                                <div class="charge-item"><h3>${t.parkingOther}</h3><p><span>${t.vehicles}:</span> <span>${data.parkingBilling.toFixed(2)} USD</span></p>${otherFeesHTML}${data.lateFee > 0 ? `<p><span>Late Fee:</span> <span>${Number(data.lateFee).toFixed(2)} USD</span></p>` : ''}<hr style="border: none; border-top: 1px solid transparent; margin-top: auto; margin-bottom: 5px;"><p class="total"><span>${t.total}:</span> <span>${(data.parkingBilling + Number(data.other) + Number(data.lateFee || 0)).toFixed(2)} USD</span></p></div>
+                            </main>
+                        </div>
                     </div>
                 </div>
                 <div class="a4-page-container back-page">
@@ -2145,7 +1956,6 @@
             </html>`;
         }
         
-        // --- ENVELOP GENERATOR ---
         function createEnvelopHTML(data) {
              const logoHTML = data.logoUrl 
                 ? `<img src="${data.logoUrl}" alt="Logo" class="envelop-logo">` 
@@ -2191,7 +2001,7 @@
                         height: 10.8cm;
                         position: absolute;
                         top: 50%;
-                        right: 0; /* Aligned to right */
+                        right: 0;
                         transform: translateY(-50%);
                         padding: 1cm;
                         box-sizing: border-box;
@@ -2207,7 +2017,6 @@
                         margin-top: -2.2mm;
                     }
 
-                    /* Reusing logic for logo size */
                     .envelop-logo {
                         width: calc((110px + 2mm) * 0.75);
                         height: 75px;
@@ -2316,4 +2125,3 @@
     </script>
 </body>
 </html>
-
