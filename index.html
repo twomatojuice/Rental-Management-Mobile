@@ -722,6 +722,7 @@
             function showModal({ title, confirmationText, onSave, showCancel = true, saveText = "Confirm" }) {
                 state.isModalOpen = true;
                 DOM.modalTitle.textContent = title;
+                DOM.modalTitle.parentElement.style.display = title ? 'block' : 'none';
                 DOM.modalInputs.innerHTML = `<div class="modal-confirmation-text">${confirmationText}</div>`;
                 state.currentModalCallback = onSave;
                 
@@ -801,17 +802,17 @@
                         .reverse()
                         .slice(0, 12);
 
-                    let historyRows = filteredHistory.map(entry => `<tr><td>${formatDate(entry.paidOn)}</td><td>${(entry.rent || 0).toFixed(2)}</td><td>${(entry.other || 0).toFixed(2)}</td><td><strong>${(entry.totalPaid || 0).toFixed(2)}</strong></td></tr>`).join('');
+                    let historyRows = filteredHistory.map(entry => `<tr><td>${formatDate(entry.paidOn)}</td><td><strong>${(entry.totalPaid || 0).toFixed(2)}</strong></td></tr>`).join('');
                     
                     if (filteredHistory.length === 0) {
-                        historyRows = `<tr><td colspan="4" style="text-align: center; padding: 20px;">No records found for ${displayYear}</td></tr>`;
+                        historyRows = `<tr><td colspan="2" style="text-align: center; padding: 20px;">No records found for ${displayYear}</td></tr>`;
                     }
 
                     const prevArrow = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`;
                     const nextArrow = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>`;
                     const paginatorHtml = `<div class="year-paginator"><button id="prev-year-btn">${prevArrow}</button><span>${displayYear}</span><button id="next-year-btn">${nextArrow}</button></div>`;
 
-                    const historyHtml = `${paginatorHtml}<div class="table-wrapper"><table class="history-table"><thead><tr><th>Paid Date</th><th>Rent</th><th>Other</th><th>Total</th></tr></thead><tbody>${historyRows}</tbody></table></div>`;
+                    const historyHtml = `${paginatorHtml}<div class="table-wrapper"><table class="history-table"><thead><tr><th>Paid Date</th><th>Total</th></tr></thead><tbody>${historyRows}</tbody></table></div>`;
                     
                     DOM.modalInputs.innerHTML = `<div class="modal-confirmation-text">${historyHtml}</div>`;
                     
@@ -820,7 +821,7 @@
                 }
 
                 showModal({ 
-                    title: `History: Unit ${tenant.unit}`, 
+                    title: "", 
                     confirmationText: '', 
                     showCancel: false,
                     saveText: "Close",
