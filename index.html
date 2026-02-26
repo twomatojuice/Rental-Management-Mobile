@@ -44,7 +44,7 @@
         h2 { font-size: 1.25rem; font-weight: 500; color: var(--secondary-text-color); margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .app-container {
-            display: flex;
+            display: none; /* Initially hidden until PIN is verified */
             flex-direction: column;
             gap: 15px;
             width: 100%;
@@ -287,9 +287,47 @@
         .year-paginator { display: flex; align-items: center; justify-content: center; gap: 15px; font-weight: 600; margin-bottom: 15px; }
         .year-paginator button { background: #f8f9fa; border: 1px solid var(--border-color); border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--primary-text-color);}
 
+        /* PIN Screen Styles */
+        .pin-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--background-color);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 2000; padding: 20px; box-sizing: border-box;
+        }
+        .pin-container {
+            background-color: var(--card-background); padding: 2rem; border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 320px; text-align: center;
+        }
+        .pin-input {
+            width: 100%; padding: 0.75rem; border: 1px solid var(--border-color);
+            border-radius: 8px; font-size: 1.5rem; text-align: center; margin: 1rem 0;
+            letter-spacing: 0.25rem; font-family: monospace; box-sizing: border-box; color: var(--primary-text-color);
+        }
+        .pin-input:focus { outline: none; border-color: var(--accent-color); }
+        .pin-input.is-invalid { border-color: var(--danger-color); animation: shake 0.3s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+        .pin-error { color: var(--danger-color); font-size: 0.85rem; margin-bottom: 1rem; display: none; font-weight: 500;}
+        .pin-submit-btn { width: 100%; padding: 0.75rem; border-radius: 8px; font-size: 1rem; font-weight: 600; border: none; background-color: var(--accent-color); color: white; cursor: pointer; transition: background-color 0.2s; }
+        .pin-submit-btn:hover { background-color: var(--accent-text-dark); }
+        .pin-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
     </style>
 </head>
 <body>
+    <div id="pin-screen" class="pin-screen">
+        <div class="pin-container">
+            <h2>Secure Access</h2>
+            <input type="password" id="pin-input" class="pin-input" placeholder="••••••" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+            <div id="pin-error" class="pin-error">Invalid PIN. Please try again.</div>
+            <button id="pin-submit-btn" class="pin-submit-btn">Enter</button>
+        </div>
+    </div>
+
     <div class="app-container">
         <!-- Calendar Section -->
         <div class="calendar-container">
@@ -344,10 +382,16 @@
                 currentlyExpandedTenantId: null,
                 isModalOpen: false,
                 isSaving: false,
-                currentModalCallback: null
+                currentModalCallback: null,
+                pin: null
             };
 
             const DOM = {
+                appContainer: document.querySelector('.app-container'),
+                pinScreen: document.getElementById('pin-screen'),
+                pinInput: document.getElementById('pin-input'),
+                pinSubmitBtn: document.getElementById('pin-submit-btn'),
+                pinError: document.getElementById('pin-error'),
                 sectionsContainer: document.getElementById('sections-container'),
                 calendarGrid: document.getElementById('calendar-grid'),
                 calendarMonthYear: document.getElementById('calendar-month-year'),
@@ -365,7 +409,7 @@
                 try {
                     const response = await fetch(SCRIPT_URL, {
                         method: 'POST',
-                        body: JSON.stringify({ action, payload })
+                        body: JSON.stringify({ action, payload, pin: state.pin })
                     });
                     const result = await response.json();
                     if (result.status === "success") {
@@ -385,11 +429,16 @@
             async function loadDataFromSheet() {
                 if (state.isModalOpen || state.isSaving) return;
                 try {
-                    const response = await fetch(SCRIPT_URL);
+                    const response = await fetch(`${SCRIPT_URL}?pin=${state.pin}`);
                     if (!response.ok) throw new Error(`Failed to load data.`);
 
                     const freshData = await response.json();
                     if (!freshData) return;
+                    
+                    if (freshData.status === "error") {
+                        console.error(freshData.message);
+                        return false;
+                    }
 
                     state.rates = freshData.rates && Object.keys(freshData.rates).length > 0 ? freshData.rates : state.rates;
                     state.sections = [];
@@ -417,8 +466,10 @@
                         });
                     }
                     render();
+                    return true;
                 } catch (error) {
                     console.error("Could not sync with Google Sheet:", error);
+                    return false;
                 }
             }
 
@@ -861,9 +912,34 @@
                 });
             }
 
+            async function handleLogin() {
+                const enteredPin = DOM.pinInput.value.trim();
+                if (!enteredPin) return;
+
+                DOM.pinSubmitBtn.disabled = true;
+                DOM.pinSubmitBtn.textContent = 'Verifying...';
+                DOM.pinInput.classList.remove('is-invalid');
+                DOM.pinError.style.display = 'none';
+
+                state.pin = enteredPin;
+                const success = await loadDataFromSheet();
+
+                if (success) {
+                    DOM.pinScreen.style.display = 'none';
+                    DOM.appContainer.style.display = 'flex';
+                    setInterval(loadDataFromSheet, SYNC_INTERVAL);
+                } else {
+                    state.pin = null;
+                    DOM.pinInput.classList.add('is-invalid');
+                    DOM.pinError.style.display = 'block';
+                    DOM.pinSubmitBtn.disabled = false;
+                    DOM.pinSubmitBtn.textContent = 'Enter';
+                }
+            }
+
             function init() {
-                loadDataFromSheet();
-                setInterval(loadDataFromSheet, SYNC_INTERVAL);
+                DOM.pinSubmitBtn.addEventListener('click', handleLogin);
+                DOM.pinInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleLogin(); });
 
                 document.body.addEventListener('click', (event) => {
                     const target = event.target;
