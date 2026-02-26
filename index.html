@@ -296,14 +296,15 @@
         }
         .pin-container {
             background-color: var(--card-background); padding: 2rem; border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 320px; text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: calc(100% - 40px); max-width: 320px; 
+            margin: 0 20px; text-align: center; box-sizing: border-box;
         }
         .pin-input {
             width: 100%; padding: 0.75rem; border: 1px solid var(--border-color);
             border-radius: 8px; font-size: 1.5rem; text-align: center; margin: 1rem 0;
             letter-spacing: 0.25rem; font-family: monospace; box-sizing: border-box; color: var(--primary-text-color);
         }
-        .pin-input:focus { outline: none; border-color: var(--accent-color); }
+        .pin-input:focus { outline: none; border-color: var(--warning-text-dark); }
         .pin-input.is-invalid { border-color: var(--danger-color); animation: shake 0.3s; }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -312,8 +313,15 @@
             75% { transform: translateX(-5px); }
         }
         .pin-error { color: var(--danger-color); font-size: 0.85rem; margin-bottom: 1rem; display: none; font-weight: 500;}
-        .pin-submit-btn { width: 100%; padding: 0.75rem; border-radius: 8px; font-size: 1rem; font-weight: 600; border: none; background-color: var(--accent-color); color: white; cursor: pointer; transition: background-color 0.2s; }
-        .pin-submit-btn:hover { background-color: var(--accent-text-dark); }
+        
+        .pin-submit-btn { 
+            width: 100%; padding: 0.75rem; border-radius: 8px; font-size: 1rem; font-weight: 600; 
+            border: 1px solid var(--warning-text-dark); 
+            background-color: var(--warning-bg-faded); 
+            color: var(--warning-text-dark); 
+            cursor: pointer; transition: background-color 0.2s; 
+        }
+        .pin-submit-btn:hover { background-color: #ffeeba; }
         .pin-submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
     </style>
@@ -321,10 +329,10 @@
 <body>
     <div id="pin-screen" class="pin-screen">
         <div class="pin-container">
-            <h2>Secure Access</h2>
+            <h2>Enter pin to login</h2>
             <input type="password" id="pin-input" class="pin-input" placeholder="••••••" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
             <div id="pin-error" class="pin-error">Invalid PIN. Please try again.</div>
-            <button id="pin-submit-btn" class="pin-submit-btn">Enter</button>
+            <button id="pin-submit-btn" class="pin-submit-btn">Login</button>
         </div>
     </div>
 
@@ -933,7 +941,7 @@
                     DOM.pinInput.classList.add('is-invalid');
                     DOM.pinError.style.display = 'block';
                     DOM.pinSubmitBtn.disabled = false;
-                    DOM.pinSubmitBtn.textContent = 'Enter';
+                    DOM.pinSubmitBtn.textContent = 'Login';
                 }
             }
 
