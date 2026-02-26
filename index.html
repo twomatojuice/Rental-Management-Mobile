@@ -437,7 +437,7 @@
             async function loadDataFromSheet() {
                 if (state.isModalOpen || state.isSaving) return;
                 try {
-                    const response = await fetch(`${SCRIPT_URL}?pin=${state.pin}`);
+                    const response = await fetch(`${SCRIPT_URL}?pin=${state.pin}&t=${new Date().getTime()}`);
                     if (!response.ok) throw new Error(`Failed to load data.`);
 
                     const freshData = await response.json();
